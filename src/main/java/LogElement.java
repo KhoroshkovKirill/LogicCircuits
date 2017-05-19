@@ -1,0 +1,4 @@
+
+interface LogElement {
+    boolean calculateValue();
+}
