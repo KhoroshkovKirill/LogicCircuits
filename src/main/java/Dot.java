@@ -9,6 +9,11 @@ public class Dot implements LogElement{
     }
 
     public boolean calculateValue(){
-        return previous.calculateValue() ^ inversion;
+        try {
+            return previous.calculateValue() ^ inversion;
+        }
+        catch (NullPointerException ex){
+            throw new IllegalArgumentException("К логическому элементу не подведено соединение");
+        }
     }
 }
