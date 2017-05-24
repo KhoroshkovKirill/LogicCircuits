@@ -2,6 +2,7 @@
 sealed class Bus(var name: String, var value: Boolean): LogElement {
 
     class InBus(name: String, value: Boolean) : Bus(name, value){
+        val out : Dot.OutDot = Dot.OutDot(false, this)
         override fun calculateValue() = this.value
     }
 

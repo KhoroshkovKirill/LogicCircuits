@@ -1,7 +1,7 @@
 
 sealed class Dot(var inversion: Boolean, var previous: LogElement?) : LogElement{
 
-    open class InDot(inversion: Boolean, previous: OutDot?): Dot(inversion,previous) {
+    class InDot(inversion: Boolean, previous: OutDot?): Dot(inversion, previous) {
         override fun calculateValue(): Boolean {
             if (this.previous != null) {
                 return previous!!.calculateValue().xor(inversion)
