@@ -1,6 +1,6 @@
 
 interface LogElement{
 
-    fun calculateValue(): Boolean
+    fun calculateValue() : Boolean
 
 }

@@ -9,7 +9,7 @@ public abstract class SeveralOperandsGate extends Gate{
         this.operands = new ArrayList<Dot>();
         for (LogElement elem:inList) {
             if (elem instanceof Gate) this.operands.add(new Dot(false,elem.out));
-            else if (elem instanceof InBus) operands.add(new Dot(false,elem));
+            else if (elem instanceof Bus.InBus) operands.add(new Dot(false,elem));
         }
         this.out = new Dot(false, this);
     }
