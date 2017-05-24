@@ -1,5 +1,3 @@
-import bus.InBus;
-
 public class OutBus extends InBus {
 
     LogElement previous;
