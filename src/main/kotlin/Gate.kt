@@ -1,36 +1,36 @@
 
 sealed class Gate : LogElement{
 
-    class NotGate(previous: Dot.OutDot) : Gate(){
-        val output : Dot = Dot.OutDot(true, this)
-        val input : Dot = Dot.InDot(false, previous)
+    class Not(previous: Dot.Out) : Gate(){
+        val output : Dot = Dot.Out(true, this)
+        val input : Dot = Dot.In(false, previous)
         override fun calculateValue(): Boolean {
             return input.calculateValue()
         }
     }
 
-    sealed class Multivariate(var inversion : Boolean, previousList : MutableList<Dot.OutDot>) : Gate() {
-        var output : Dot = Dot.OutDot(inversion, this)
-        var inputList = mutableListOf<Dot.InDot>()
+    sealed class Multivariate(var inversion : Boolean, previousList : MutableList<Dot.Out>) : Gate() {
+        var output : Dot = Dot.Out(inversion, this)
+        var inputList = mutableListOf<Dot.In>()
         init {
-            previousList.forEach { inputList.add(Dot.InDot(false, it)) }
+            previousList.forEach { inputList.add(Dot.In(false, it)) }
         }
 
-        class And(inversion: Boolean, previousList: MutableList<Dot.OutDot>) :
+        class And(inversion: Boolean, previousList: MutableList<Dot.Out>) :
                 Gate.Multivariate(inversion, previousList){
             override fun calculateValue(): Boolean {
-                return inputList.all { it.calculateValue() == true }
+                return inputList.all { it.calculateValue() }
             }
         }
 
-        class Or(inversion: Boolean, previousList: MutableList<Dot.OutDot>) :
+        class Or(inversion: Boolean, previousList: MutableList<Dot.Out>) :
                 Gate.Multivariate(inversion, previousList){
             override fun calculateValue(): Boolean {
-                return inputList.any { it.calculateValue() == true }
+                return inputList.any { it.calculateValue() }
             }
         }
 
-        class Xor(inversion: Boolean, previousList: MutableList<Dot.OutDot>) :
+        class Xor(inversion: Boolean, previousList: MutableList<Dot.Out>) :
                 Gate.Multivariate(inversion, previousList){
             override fun calculateValue(): Boolean {
                 var rez : Boolean = false
