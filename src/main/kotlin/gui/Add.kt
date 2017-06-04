@@ -19,7 +19,7 @@ class Add : Application() {
         val btn = Button()
         btn.layoutX = 100.0//положение
         btn.layoutY = 80.0
-        btn.onAction = EventHandler { btn.layoutX++ }
+        btn.onAction = EventHandler { primaryStage.close() }
         root.children.add(btn)
         primaryStage.scene = scene
         primaryStage.show()
