@@ -1,7 +1,7 @@
+package logic
+sealed class Gate : LogElement {
 
-sealed class Gate : LogElement{
-
-    class Not(previous: Dot.Out) : Gate(){
+    class Not(previous: Dot.Out) : logic.Gate(){
         val output : Dot = Dot.Out(true, this)
         val input : Dot = Dot.In(false, previous)
         override fun calculateValue(): Boolean {
@@ -9,7 +9,7 @@ sealed class Gate : LogElement{
         }
     }
 
-    sealed class Multivariate(var inversion : Boolean, previousList : MutableList<Dot.Out>) : Gate() {
+    sealed class Multivariate(var inversion : Boolean, previousList : MutableList<Dot.Out>) : logic.Gate() {
         var output : Dot = Dot.Out(inversion, this)
         var inputList = mutableListOf<Dot.In>()
         init {
@@ -17,21 +17,21 @@ sealed class Gate : LogElement{
         }
 
         class And(inversion: Boolean, previousList: MutableList<Dot.Out>) :
-                Gate.Multivariate(inversion, previousList){
+                logic.Gate.Multivariate(inversion, previousList){
             override fun calculateValue(): Boolean {
                 return inputList.all { it.calculateValue() }
             }
         }
 
         class Or(inversion: Boolean, previousList: MutableList<Dot.Out>) :
-                Gate.Multivariate(inversion, previousList){
+                logic.Gate.Multivariate(inversion, previousList){
             override fun calculateValue(): Boolean {
                 return inputList.any { it.calculateValue() }
             }
         }
 
         class Xor(inversion: Boolean, previousList: MutableList<Dot.Out>) :
-                Gate.Multivariate(inversion, previousList){
+                logic.Gate.Multivariate(inversion, previousList){
             override fun calculateValue(): Boolean {
                 var rez : Boolean = false
                 inputList.forEach { rez = it.calculateValue().xor(rez) }

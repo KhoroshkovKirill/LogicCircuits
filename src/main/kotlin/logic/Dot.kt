@@ -1,7 +1,7 @@
+package logic
+sealed class Dot(var inversion: Boolean, var previous: LogElement?) : LogElement {
 
-sealed class Dot(var inversion: Boolean, var previous: LogElement?) : LogElement{
-
-    class In(inversion: Boolean, previous: Out?): Dot(inversion, previous) {
+    class In(inversion: Boolean, previous: logic.Dot.Out?): logic.Dot(inversion, previous) {
         override fun calculateValue(): Boolean {
             if (this.previous != null) {
                 return previous!!.calculateValue().xor(inversion)
@@ -12,7 +12,7 @@ sealed class Dot(var inversion: Boolean, var previous: LogElement?) : LogElement
         }
     }
 
-    class Out(inversion: Boolean, previous: LogElement): Dot(inversion,previous) {
+    class Out(inversion: Boolean, previous: LogElement): logic.Dot(inversion,previous) {
         override fun calculateValue(): Boolean {
             return this.previous!!.calculateValue().xor(inversion)
         }
