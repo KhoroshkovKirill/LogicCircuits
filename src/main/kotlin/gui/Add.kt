@@ -1,5 +1,6 @@
 package gui
 
+import Main
 import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Group
@@ -18,7 +19,7 @@ class Add : Application() {
         val btn = Button()
         btn.layoutX = 100.0//положение
         btn.layoutY = 80.0
-        btn.onAction = EventHandler { primaryStage.close() }
+        btn.onAction = EventHandler { btn.layoutX++ }
         root.children.add(btn)
         primaryStage.scene = scene
         primaryStage.show()
