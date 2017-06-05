@@ -11,23 +11,22 @@ import javafx.stage.Stage
 /**
  * Created by khoroshkovkirill on 04.06.17.
  */
-class Add : Application() {
-    override fun start(primaryStage: Stage) {
-        primaryStage.title = "Add"
-        val root = Group()
-        val scene = Scene(root, 300.0, 250.0)
-        val btn = Button()
-        btn.layoutX = 100.0//положение
-        btn.layoutY = 80.0
-        btn.onAction = EventHandler { primaryStage.close() }
-        root.children.add(btn)
-        primaryStage.scene = scene
-        primaryStage.show()
-    }
+class Add() {
 
     companion object {
-        fun main(args: Array<String>) {
-            Application.launch(*args)
+        @JvmStatic fun display(main: Main) {
+            val window = Stage()
+            window.title = "Add"
+            val root = Group()
+            val scene = Scene(root, 300.0, 250.0)
+            val btn = Button()
+            btn.layoutX = 100.0//положение
+            btn.layoutY = 80.0
+            btn.onAction = EventHandler { main.button.text = "ggggg" }
+            root.children.add(btn)
+            window.scene = scene
+            window.show()
         }
     }
+
 }
