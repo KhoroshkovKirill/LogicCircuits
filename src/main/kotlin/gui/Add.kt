@@ -11,7 +11,7 @@ import javafx.stage.Stage
 /**
  * Created by khoroshkovkirill on 04.06.17.
  */
-class Add() {
+class Add {
 
     companion object {
         @JvmStatic fun display(main: Main) {
@@ -22,7 +22,7 @@ class Add() {
             val btn = Button()
             btn.layoutX = 100.0//положение
             btn.layoutY = 80.0
-            btn.onAction = EventHandler { main.button.text = "ggggg" }
+            btn.onAction = EventHandler { main.busesView.add("mmm") }
             root.children.add(btn)
             window.scene = scene
             window.show()

@@ -1,43 +1,34 @@
 import gui.Add
 import javafx.application.*
-import javafx.event.*
 import javafx.scene.*
 import javafx.scene.control.*
-import javafx.scene.shape.Line
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.VBox
 import javafx.stage.*
-import views.BusView
+import views.BusesView
 
 class Main : Application() {
     var button = Button()
     var button1 = Button()
+    val busesView = BusesView()
+    val layout = VBox()
+    val borderPane = BorderPane()
+    val menu = ToolBar()
 
     override fun start(primaryStage: Stage) {
-        primaryStage.title = "Hello World"
+        primaryStage.title = "Logic Circuits"
 
-        button.layoutX = 100.0//положение
-        button.layoutY = 80.0
-        button.text = "Hello"
-        button1.layoutX = 200.0//положение
-        button1.layoutY = 80.0
-        button1.text = "Bello"
 
-        val line = Line(20.0,20.0,40.0,40.0)
+        val menuFile = Menu("File")
+        val menuEdit = Menu("Edit")
+        val menuView = Menu("View")
+        val menuBar = MenuBar(menuFile, menuEdit, menuView)
 
-        val layout = Group()
-        layout.children.add(button)
-        layout.children.add(button1)
-        layout.children.add(line)
+        borderPane.top = menuBar
 
-        button.onAction = EventHandler {
-            Add.display(this)
-        }
+        layout.children.add(borderPane)
 
-        button1.onAction = EventHandler {
-            layout.children.add(BusView().line)
-            println("hjhjuh")
-        }
-
-        val scene = Scene(layout, 300.0, 250.0)
+        val scene = Scene(layout, 500.0, 500.0)
         primaryStage.scene = scene
         primaryStage.show()
     }
