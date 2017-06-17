@@ -2,13 +2,14 @@ package views
 
 import javafx.scene.Group
 import javafx.scene.Node
+import javafx.scene.layout.Pane
 import javafx.scene.shape.Line
 import logic.Bus
 
 /**
  * Created by khoroshkovkirill on 04.06.17.
  */
-class BusesView(vararg children: Node?) : Group(*children) {
+class BusesView(vararg children: Node?) : Pane(*children) {
 
     class BusView(startX: Double, startY: Double, endX: Double, endY: Double) : Line(startX, startY, endX, endY) {
         val bus = Bus.In()
@@ -16,6 +17,7 @@ class BusesView(vararg children: Node?) : Group(*children) {
     }
 
     fun add(name: String){
-        this.children.add(BusView(12.0,12.0,12.0,120.0))
+        val x = (this.children.count() + 1) * 10.0
+        this.children.add(BusView(x,12.0,x,120.0))
     }
 }

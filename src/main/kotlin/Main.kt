@@ -1,5 +1,6 @@
 import gui.Add
 import javafx.application.*
+import javafx.event.EventHandler
 import javafx.scene.*
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
@@ -8,12 +9,9 @@ import javafx.stage.*
 import views.BusesView
 
 class Main : Application() {
-    var button = Button()
-    var button1 = Button()
     val busesView = BusesView()
-    val layout = VBox()
     val borderPane = BorderPane()
-    val menu = ToolBar()
+    val button = Button()
 
     override fun start(primaryStage: Stage) {
         primaryStage.title = "Logic Circuits"
@@ -24,11 +22,13 @@ class Main : Application() {
         val menuView = Menu("View")
         val menuBar = MenuBar(menuFile, menuEdit, menuView)
 
-        borderPane.top = menuBar
+        borderPane.top = VBox(menuBar)
+        borderPane.left = busesView
+        borderPane.bottom = button
 
-        layout.children.add(borderPane)
+        button.onAction = EventHandler { Add.display(this) }
 
-        val scene = Scene(layout, 500.0, 500.0)
+        val scene = Scene(borderPane, 500.0, 500.0)
         primaryStage.scene = scene
         primaryStage.show()
     }
