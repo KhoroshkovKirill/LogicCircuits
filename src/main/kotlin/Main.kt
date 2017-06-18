@@ -1,32 +1,47 @@
-import gui.Add
 import javafx.application.*
 import javafx.event.EventHandler
+import javafx.geometry.Insets
 import javafx.scene.*
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.VBox
 import javafx.stage.*
+import logic.Bus
 import views.BusesView
 
 class Main : Application() {
-    val busesView = BusesView()
+    val inBuses = BusesView()
+    val outBus = BusesView.BusView("y",Bus.Out())
+    val down = TextArea()
     val borderPane = BorderPane()
-    val button = Button()
+
 
     override fun start(primaryStage: Stage) {
         primaryStage.title = "Logic Circuits"
 
-
         val menuFile = Menu("File")
         val menuEdit = Menu("Edit")
         val menuView = Menu("View")
-        val menuBar = MenuBar(menuFile, menuEdit, menuView)
+        val menuRun = Menu("Run")
+        val itemTry = MenuItem("Try")
+        menuRun.items.add(itemTry)
+        itemTry.onAction = EventHandler {
+            try {
+                outBus.bus.calculateValue()
+            }
+            catch (ex : IllegalArgumentException){
+                println(ex.message)
+            }
+        }
+        val menuBar = MenuBar(menuFile, menuEdit, menuView, menuRun)
 
         borderPane.top = VBox(menuBar)
-        borderPane.left = busesView
-        borderPane.bottom = button
+        borderPane.left = inBuses
+        BorderPane.setMargin(inBuses, Insets(0.0, 0.0, 0.0, 20.0))
+        borderPane.right = outBus
+        BorderPane.setMargin(outBus, Insets(0.0, 20.0, 0.0, 0.0))
+        borderPane.bottom = down
 
-        button.onAction = EventHandler { Add.display(this) }
 
         val scene = Scene(borderPane, 500.0, 500.0)
         primaryStage.scene = scene

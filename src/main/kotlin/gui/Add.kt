@@ -1,7 +1,6 @@
 package gui
 
 import Main
-import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Group
 import javafx.scene.Scene
@@ -22,7 +21,7 @@ class Add {
             val btn = Button()
             btn.layoutX = 100.0//положение
             btn.layoutY = 80.0
-            btn.onAction = EventHandler { main.busesView.add("mmm") }
+            btn.onAction = EventHandler { main.inBuses.add("x") }
             root.children.add(btn)
             window.scene = scene
             window.show()
