@@ -21,7 +21,4 @@ class BusesView : HBox(10.0){
         this.children.add(BusView(name,Bus.In()))
     }
 
-    fun remove(bus: BusView){
-        this.children.remove(bus)
-    }
 }
