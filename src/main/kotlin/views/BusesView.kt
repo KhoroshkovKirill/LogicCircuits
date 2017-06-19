@@ -6,9 +6,6 @@ import javafx.scene.layout.VBox
 import javafx.scene.shape.Line
 import logic.Bus
 
-/**
- * Created by khoroshkovkirill on 04.06.17.
- */
 class BusesView : HBox(10.0){
 
     class BusView(name: String, val bus : Bus) : VBox(5.0) {

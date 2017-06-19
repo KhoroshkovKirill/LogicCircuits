@@ -7,10 +7,7 @@ import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.stage.Stage
 
-/**
- * Created by khoroshkovkirill on 04.06.17.
- */
-class Add {
+class AddWindow {
 
     companion object {
         @JvmStatic fun display(main: Main) {
