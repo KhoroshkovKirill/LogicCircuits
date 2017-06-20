@@ -6,6 +6,11 @@
     -fx-background-color: rgb(58,58,60);
 }
 
+.context-menu . label {
+    fx-background-color: rgb(58,58,60);
+    -fx-text-fill: rgb(230,230,230);
+}
+
 .menu-bar .label {
     -fx-font-size: 10pt;
     -fx-text-fill: rgb(230,230,230);
@@ -17,6 +22,19 @@
 
 .button {
     -fx-background-color: white;
+    -fx-font-size: 10pt;
+    -fx-text-fill: black;
+}
+
+.button:hover {
+    -fx-background-color: silver;
+}
+
+.button:pressed{
+    -fx-background-color: gainsboro;
+}
+
+.text-area{
     -fx-font-size: 10pt;
     -fx-text-fill: black;
 }

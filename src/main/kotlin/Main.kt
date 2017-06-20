@@ -1,4 +1,4 @@
-import gui.AddWindow
+import gui.AddController
 import gui.MainMenuBar
 import javafx.application.*
 import javafx.event.EventHandler
@@ -18,19 +18,22 @@ import javafx.scene.image.ImageView
 class Main : Application() {
     val inBuses = BusesView()
     val outBus = BusesView.BusView("y",Bus.Out())
-    val console = TextArea("...")
+    val console = TextArea()
     val borderPane = BorderPane()
     val menuBar = MainMenuBar(this)
+    val scene = Scene(borderPane, 500.0, 500.0)
 
     override fun start(primaryStage: Stage) {
         primaryStage.title = "Logic Circuits"
 
+        /*Tools*/
         val addButton = Button("",ImageView(Image("add.png")))
-        addButton.onAction = EventHandler { this.add() }
+        addButton.onAction = EventHandler { this.addBus() }
         val checkButton = Button("",ImageView(Image("check.png")))
+
         checkButton.onAction = EventHandler { this.check() }
         val deleteButton = Button("",ImageView(Image("delete.png")))
-        deleteButton.onAction = EventHandler { this.delete() }
+        deleteButton.onAction = EventHandler { this.addGate() }
 
         val toolBar = ToolBar(
                 addButton,
@@ -39,34 +42,45 @@ class Main : Application() {
         )
         toolBar.orientation = Orientation.VERTICAL
 
+        /*BorderPane*/
         borderPane.top = VBox(menuBar)
         borderPane.center = inBuses
         BorderPane.setMargin(inBuses, Insets(0.0, 0.0, 0.0, 20.0))
         borderPane.right = outBus
         BorderPane.setMargin(outBus, Insets(0.0, 20.0, 0.0, 0.0))
         borderPane.left = toolBar
+        console.prefHeight = 75.0
         borderPane.bottom = console
 
-        val scene = Scene(borderPane, 500.0, 500.0)
+        /*Show*/
         scene.stylesheets.add("style.css")
         primaryStage.scene = scene
         primaryStage.show()
     }
 
-    fun  add(){
-        AddWindow.display(this)
+    fun  addBus(){
+        AddController().displayForBus(this)
+    }
+
+    fun  addGate(){
+        AddController().displayFoGate(this)
     }
 
     fun check(){
         try {
             outBus.bus.calculateValue()
         } catch (ex: IllegalArgumentException) {
-            console.text += ( "\n" + ex.message )
+            console.text = ex.localizedMessage
         }
     }
 
-    fun delete(){
-        inBuses.children.removeAll()
+    fun deleteBus(i : Int){
+        try {
+            inBuses.children.remove(i, i)
+        }
+        catch (ex: Exception ){
+            console.text = ex.toString()
+        }
     }
 
     companion object {
