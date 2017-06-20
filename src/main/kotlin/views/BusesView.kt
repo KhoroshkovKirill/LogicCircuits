@@ -10,7 +10,7 @@ class BusesView : HBox(10.0){
 
     class BusView(name: String, val bus : Bus) : VBox(5.0) {
         init {
-            this.children.addAll(Label(name),Line(10.0, 0.0, 10.0, 140.0))
+            this.children.addAll(Label(name),Line(0.0, 0.0, 0.0, 300.0))
         }
     }
 

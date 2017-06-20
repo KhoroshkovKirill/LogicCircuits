@@ -2,7 +2,6 @@ import gui.AddController
 import gui.MainMenuBar
 import javafx.application.*
 import javafx.event.EventHandler
-import javafx.geometry.Insets
 import javafx.geometry.Orientation
 import javafx.scene.*
 import javafx.scene.control.*
@@ -20,7 +19,9 @@ class Main : Application() {
     val outBus = BusesView.BusView("y",Bus.Out())
     val console = TextArea()
     val borderPane = BorderPane()
+    val centerScrollPane = ScrollPane()
     val menuBar = MainMenuBar(this)
+    val splitPane = SplitPane(centerScrollPane, outBus)
     val scene = Scene(borderPane, 500.0, 500.0)
 
     override fun start(primaryStage: Stage) {
@@ -28,12 +29,12 @@ class Main : Application() {
 
         /*Tools*/
         val addButton = Button("",ImageView(Image("add.png")))
-        addButton.onAction = EventHandler { this.addBus() }
+        addButton.onAction = EventHandler { AddController().display(this) }
         val checkButton = Button("",ImageView(Image("check.png")))
 
         checkButton.onAction = EventHandler { this.check() }
         val deleteButton = Button("",ImageView(Image("delete.png")))
-        deleteButton.onAction = EventHandler { this.addGate() }
+        deleteButton.onAction = EventHandler { inBuses.autosize() }
 
         val toolBar = ToolBar(
                 addButton,
@@ -44,10 +45,8 @@ class Main : Application() {
 
         /*BorderPane*/
         borderPane.top = VBox(menuBar)
-        borderPane.center = inBuses
-        BorderPane.setMargin(inBuses, Insets(0.0, 0.0, 0.0, 20.0))
-        borderPane.right = outBus
-        BorderPane.setMargin(outBus, Insets(0.0, 20.0, 0.0, 0.0))
+        centerScrollPane.content = inBuses
+        borderPane.center = splitPane
         borderPane.left = toolBar
         console.prefHeight = 75.0
         borderPane.bottom = console
@@ -56,14 +55,6 @@ class Main : Application() {
         scene.stylesheets.add("style.css")
         primaryStage.scene = scene
         primaryStage.show()
-    }
-
-    fun  addBus(){
-        AddController().displayForBus(this)
-    }
-
-    fun  addGate(){
-        AddController().displayFoGate(this)
     }
 
     fun check(){
