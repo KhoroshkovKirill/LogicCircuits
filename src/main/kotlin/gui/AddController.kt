@@ -5,18 +5,48 @@ import javafx.event.EventHandler
 import javafx.scene.Group
 import javafx.scene.Scene
 import javafx.scene.control.Button
-import javafx.scene.layout.Pane
+import javafx.scene.control.TabPane
 import javafx.stage.Modality
 import javafx.stage.Stage
+import javafx.scene.control.Tab
+import javafx.scene.control.TextField
+import javafx.scene.layout.Pane
+
 
 class AddController {
 
-    fun display(main: Main){
+    fun display(main: Main){//tabPane
         val stage = Stage()
         stage.title = "Add"
-        val root = Pane()
-        val scene = Scene(root, 300.0, 100.0)
-        val addBusButton = Button("Bus")
+
+        /*Add Bus*/
+        val tabForBus = Tab("Bus")
+        val paneForBus = Pane()
+        val okButtonForBus = Button("Ok")
+        val nameBus = TextField()
+        okButtonForBus.layoutX = 150.0
+        okButtonForBus.layoutY = 150.0
+        okButtonForBus.onAction = EventHandler {
+            try {
+                main.inBuses.add(nameBus.text)
+                stage.close()
+            }
+            catch (ex : IllegalArgumentException){
+                print(ex.message)
+            }
+        }
+        val cancelButtonForBus = Button("Cancel")
+        cancelButtonForBus.layoutX = 200.0
+        cancelButtonForBus.layoutY = 150.0
+        cancelButtonForBus.onAction = EventHandler { stage.close() }
+        paneForBus.children.addAll(okButtonForBus,cancelButtonForBus,nameBus)
+        tabForBus.content = paneForBus
+
+        /*Add Gate*/
+        val addGateTab = Tab("Gate")
+        val root = TabPane(tabForBus,addGateTab)
+        val scene = Scene(root, 300.0, 250.0)
+        /*val addBusButton = Button("Bus")
         addBusButton.layoutX = 50.0
         addBusButton.layoutY = 20.0
         addBusButton.onAction = EventHandler {
@@ -36,8 +66,8 @@ class AddController {
         cancelButton.onAction = EventHandler {
             stage.close()
         }
-        root.children.addAll(addBusButton,addGateButton,cancelButton)
-        //stage.isResizable = false
+        root.children.addAll(addBusButton,addGateButton,cancelButton)*/
+        stage.isResizable = false
         stage.initModality(Modality.WINDOW_MODAL)
         stage.initOwner(main.scene.window)
         stage.scene = scene

@@ -9,7 +9,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.VBox
 import javafx.stage.*
 import logic.Bus
-import views.BusesView
+import views.circuit.BusesView
 import javafx.scene.control.ToolBar
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
