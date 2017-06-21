@@ -9,7 +9,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.VBox
 import javafx.stage.*
 import logic.Bus
-import views.circuit.BusesView
+import views.circuitView.BusesView
 import javafx.scene.control.ToolBar
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -34,7 +34,7 @@ class Main : Application() {
 
         checkButton.onAction = EventHandler { this.check() }
         val deleteButton = Button("",ImageView(Image("delete.png")))
-        deleteButton.onAction = EventHandler { inBuses.autosize() }
+        deleteButton.onAction = EventHandler { deleteBus(2) }
 
         val toolBar = ToolBar(
                 addButton,
@@ -57,20 +57,26 @@ class Main : Application() {
         primaryStage.show()
     }
 
-    fun check(){
+    fun check() : Boolean{
         try {
             outBus.bus.calculateValue()
+            return true
         } catch (ex: IllegalArgumentException) {
-            console.text = ex.localizedMessage
+            printMessage(ex.localizedMessage)
+            return false
         }
+    }
+
+    fun printMessage(message : String){
+        console.text = message
     }
 
     fun deleteBus(i : Int){
         try {
-            inBuses.children.remove(i, i)
+            inBuses.children.remove(3, 6)
         }
         catch (ex: Exception ){
-            console.text = ex.toString()
+            printMessage(ex.toString())
         }
     }
 

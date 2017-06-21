@@ -1,9 +1,5 @@
-package views.circuit
+package views.circuitView
 
-import javafx.scene.control.Label
-import javafx.scene.layout.HBox
-import javafx.scene.layout.VBox
-import javafx.scene.shape.Line
 import logic.Bus
 
 class BusesView : javafx.scene.layout.HBox(10.0){
@@ -15,7 +11,7 @@ class BusesView : javafx.scene.layout.HBox(10.0){
     }
 
     fun add(name: String){
-        this.children.add(views.circuit.BusesView.BusView(name, Bus.In()))
+        this.children.add(views.circuitView.BusesView.BusView(name, Bus.In()))
     }
 
 }

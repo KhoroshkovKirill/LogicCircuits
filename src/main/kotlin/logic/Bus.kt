@@ -1,24 +1,22 @@
 package logic
 sealed class Bus: LogElement {
-    var value = false
 
     class In : logic.Bus(){
-        val out : Dot.Out = Dot.Out(false, this)
+        var value = false
+        val outPut : Dot.Out = Dot.Out(this)
         override fun calculateValue() = this.value
     }
 
     class Out: logic.Bus(){
-        var previous: Dot? = null
+        var inPut: Dot.Out? = null
 
         override fun calculateValue() : Boolean{
-            if (this.previous != null) {
-                this.value = previous!!.calculateValue()
+            if (this.inPut != null) {
+                return inPut!!.calculateValue()
             }
             else {
-                this.value = false
                 throw IllegalArgumentException("К выходной шине не подведено соединение")
             }
-            return this.value
         }
     }
 

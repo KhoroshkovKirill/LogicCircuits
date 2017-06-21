@@ -6,18 +6,18 @@ import javafx.scene.control.MenuItem
 import Main
 import javafx.event.EventHandler
 
-/**
- * Created by khoroshkovkirill on 19.06.17.
- */
 class MainMenuBar(val main : Main) : MenuBar(){
     init {
         val menuFile = Menu("File")
         val menuEdit = Menu("Edit")
         val menuView = Menu("View")
         val menuRun = Menu("Run")
+
+        /*Run*/
         val itemCheck = MenuItem("Check")
         itemCheck.onAction = EventHandler { main.check() }
         menuRun.items.add(itemCheck)
+
         menus.addAll(menuFile, menuEdit, menuView, menuRun)
     }
 }

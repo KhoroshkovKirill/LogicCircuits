@@ -1,37 +1,36 @@
 package logic
+
 sealed class Gate : LogElement {
 
-    class Not(previous: Dot.Out) : logic.Gate(){
-        val output : Dot = Dot.Out(true, this)
-        val input : Dot = Dot.In(false, previous)
+    class Not : logic.Gate(){
+        val output : Dot = Dot.Out(this)
+        val input : Dot = Dot.In()
         override fun calculateValue(): Boolean {
             return input.calculateValue()
         }
     }
 
-    sealed class Multivariate(var inversion : Boolean, previousList : MutableList<Dot.Out>) : logic.Gate() {
-        var output : Dot = Dot.Out(inversion, this)
-        var inputList = mutableListOf<Dot.In>()
+    sealed class Multivariate(outputsCount : Int) : logic.Gate() {
+        open val output : Dot.Out = Dot.Out(this)
+        val inputList = mutableListOf<Dot.In>()
         init {
-            previousList.forEach { inputList.add(Dot.In(false, it)) }
+            for (i in 1..outputsCount)
+            inputList.add(Dot.In())
         }
 
-        class And(inversion: Boolean, previousList: MutableList<Dot.Out>) :
-                logic.Gate.Multivariate(inversion, previousList){
+        class And(outputsCount: Int) : logic.Gate.Multivariate(outputsCount){
             override fun calculateValue(): Boolean {
                 return inputList.all { it.calculateValue() }
             }
         }
 
-        class Or(inversion: Boolean, previousList: MutableList<Dot.Out>) :
-                logic.Gate.Multivariate(inversion, previousList){
+        class Or(outputsCount: Int) : logic.Gate.Multivariate(outputsCount){
             override fun calculateValue(): Boolean {
                 return inputList.any { it.calculateValue() }
             }
         }
 
-        class Xor(inversion: Boolean, previousList: MutableList<Dot.Out>) :
-                logic.Gate.Multivariate(inversion, previousList){
+        class Xor(outputsCount: Int) : logic.Gate.Multivariate(outputsCount){
             override fun calculateValue(): Boolean {
                 var rez : Boolean = false
                 inputList.forEach { rez = it.calculateValue().xor(rez) }
