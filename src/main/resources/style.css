@@ -38,3 +38,11 @@
     -fx-font-size: 10pt;
     -fx-text-fill: black;
 }
+
+.split-pane *.split-pane-divider {
+    -fx-padding: 0 1 0 1;
+}
+
+.split-pane-divider {
+   -fx-background-color: black;
+}

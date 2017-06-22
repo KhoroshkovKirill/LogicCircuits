@@ -13,15 +13,19 @@ import views.circuitView.BusesView
 import javafx.scene.control.ToolBar
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import views.circuitView.CircuitView
+import views.truthTable.TruthTable
 
 class Main : Application() {
     val inBuses = BusesView()
     val outBus = BusesView.BusView("y",Bus.Out())
     val console = TextArea()
     val borderPane = BorderPane()
-    val centerScrollPane = ScrollPane()
+    val circuitView = CircuitView()
+    val truthTableWindow = VBox()
+    var truthTable = TruthTable(circuitView.circuit)
     val menuBar = MainMenuBar(this)
-    val splitPane = SplitPane(centerScrollPane, outBus)
+    val splitPane = SplitPane(circuitView, truthTableWindow)
     val scene = Scene(borderPane, 500.0, 500.0)
 
     override fun start(primaryStage: Stage) {
@@ -30,22 +34,36 @@ class Main : Application() {
         /*Tools*/
         val addButton = Button("",ImageView(Image("add.png")))
         addButton.onAction = EventHandler { AddController().display(this) }
+        val editButton = Button("",ImageView(Image("edit.png")))
         val checkButton = Button("",ImageView(Image("check.png")))
-
         checkButton.onAction = EventHandler { this.check() }
         val deleteButton = Button("",ImageView(Image("delete.png")))
-        deleteButton.onAction = EventHandler { deleteBus(2) }
+        deleteButton.onAction = EventHandler { TODO() }
 
         val toolBar = ToolBar(
                 addButton,
+                editButton,
                 checkButton,
                 deleteButton
         )
         toolBar.orientation = Orientation.VERTICAL
 
+        /*Truth table*/
+        val refreshButton = Button("",ImageView(Image("refresh.png")))
+        refreshButton.onAction = EventHandler { truthTable = TruthTable(circuitView.circuit) }
+        val closeButton = Button("",ImageView(Image("close.png")))
+        closeButton.onAction = EventHandler { TODO() }
+
+        val toolsForTable = ToolBar(
+                refreshButton,
+                closeButton
+        )
+        toolsForTable.orientation = Orientation.HORIZONTAL
+        truthTableWindow.children.addAll(toolsForTable,truthTable)
+
         /*BorderPane*/
         borderPane.top = VBox(menuBar)
-        centerScrollPane.content = inBuses
+        circuitView.content = inBuses
         borderPane.center = splitPane
         borderPane.left = toolBar
         console.prefHeight = 75.0

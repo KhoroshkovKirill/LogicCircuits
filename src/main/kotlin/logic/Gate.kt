@@ -10,7 +10,7 @@ sealed class Gate : LogElement {
         }
     }
 
-    sealed class Multivariate(outputsCount : Int) : logic.Gate() {
+    sealed class Multivariate (outputsCount : Int) : logic.Gate() {
         open val output : Dot.Out = Dot.Out(this)
         val inputList = mutableListOf<Dot.In>()
         init {

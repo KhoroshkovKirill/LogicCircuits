@@ -13,6 +13,18 @@ class MainMenuBar(val main : Main) : MenuBar(){
         val menuView = Menu("View")
         val menuRun = Menu("Run")
 
+        /*File*/
+        val itemClose = MenuItem("Close")
+        itemClose.onAction = EventHandler { System.exit(1) }
+        menuFile.items.add(itemClose)
+
+        /*Edit*/
+
+        /*View*/
+        val itemTruthTable = MenuItem("Truth Table")
+        itemTruthTable.onAction = EventHandler { TODO() }
+        menuView.items.add(itemTruthTable)
+
         /*Run*/
         val itemCheck = MenuItem("Check")
         itemCheck.onAction = EventHandler { main.check() }
