@@ -17,13 +17,13 @@ import views.circuitView.CircuitView
 import views.truthTable.TruthTable
 
 class Main : Application() {
-    val inBuses = BusesView()
-    val outBus = BusesView.BusView("y",Bus.Out())
+    val inBuses = BusesView()//dddddddddddddddddddddddddddddddddd
+    val outBus = BusesView.BusView("y",Bus.Out())//dddddddddddddd
     val console = TextArea()
     val borderPane = BorderPane()
     val circuitView = CircuitView()
     val truthTableWindow = VBox()
-    var truthTable = TruthTable(circuitView.circuit)
+    var truthTable = TruthTable()
     val menuBar = MainMenuBar(this)
     val splitPane = SplitPane(circuitView, truthTableWindow)
     val scene = Scene(borderPane, 500.0, 500.0)
@@ -50,7 +50,11 @@ class Main : Application() {
 
         /*Truth table*/
         val refreshButton = Button("",ImageView(Image("refresh.png")))
-        refreshButton.onAction = EventHandler { truthTable = TruthTable(circuitView.circuit) }
+        refreshButton.onAction = EventHandler {
+            //if (check()) {
+                truthTable = TruthTable(circuitView.circuit)
+            //}
+        }
         val closeButton = Button("",ImageView(Image("close.png")))
         closeButton.onAction = EventHandler { TODO() }
 
@@ -67,6 +71,7 @@ class Main : Application() {
         borderPane.center = splitPane
         borderPane.left = toolBar
         console.prefHeight = 75.0
+        console.isEditable = false
         borderPane.bottom = console
 
         /*Show*/

@@ -1,32 +1,36 @@
 package logic
 
 class Circuit {
-    val inBuses = mutableMapOf<String, Bus.In>()
+    val inBuses = mutableSetOf<Bus.In>()
     val gates = mutableListOf<Gate>()
     val outBus = Bus.Out()
 
-    fun addBus(name : String){
-        if (inBuses.containsKey(name)){
-            throw IllegalArgumentException("Шина с таким именем уже существует")
+    fun addBus(bus: Bus.In){
+            inBuses.add(bus)
+    }
+
+    fun addGate(gate: Gate){
+        gates.add(gate)
+    }
+
+    fun deleteBus(bus: Bus.In){
+        if (inBuses.contains(bus)){
+            bus.outPut.deleteFromPrevious()
+            inBuses.remove(bus)
         }
         else {
-            inBuses.put(name, Bus.In())
+            throw IllegalArgumentException("Такой шины не существует")
         }
     }
 
-    fun addGateNOT(){
-        gates.add(Gate.Not())
+    fun deleteGate(gate: Gate){
+        if (gates.contains(gate)){
+            gate.prepareToDelete()
+            gates.remove(gate)
+        }
+        else{
+            throw IllegalArgumentException("Такого элемента не существует")
+        }
     }
 
-    fun addGateAND(outputsCount : Int){
-        gates.add(Gate.Multivariate.And(outputsCount))
-    }
-
-    fun addGateOR(outputsCount : Int){
-        gates.add(Gate.Multivariate.Or(outputsCount))
-    }
-
-    fun addGateXOR(outputsCount : Int){
-        gates.add(Gate.Multivariate.Xor(outputsCount))
-    }
 }

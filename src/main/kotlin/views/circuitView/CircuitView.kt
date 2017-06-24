@@ -2,10 +2,17 @@ package views.circuitView
 
 import javafx.scene.control.ScrollPane
 import logic.Circuit
+import logic.Gate
 
-/**
- * Created by khoroshkovkirill on 22.06.17.
- */
 class CircuitView : ScrollPane(){
     val circuit = Circuit()
+
+   /* fun addBusView(element : String){
+        circuit.addBus(element)
+    }*/
+
+    fun addGateView(gate: Gate){
+        circuit.addGate(gate)
+    }
+
 }
