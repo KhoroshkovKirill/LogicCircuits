@@ -11,9 +11,6 @@ import javafx.scene.control.Tab
 import javafx.scene.control.TextField
 import javafx.scene.layout.Pane
 import javafx.scene.text.Text
-import logic.Gate
-import views.circuitView.GateView
-
 
 class AddController {
 
@@ -39,7 +36,7 @@ class AddController {
         okButtonForBus.layoutY = 160.0
         okButtonForBus.onAction = EventHandler {
             try {
-                //main.circuitView.addBusView(nameTextField.text)
+                main.circuitView.addBusView(nameTextField.text)
                 stage.close()
             }
             catch (ex : IllegalArgumentException){

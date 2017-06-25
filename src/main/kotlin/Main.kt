@@ -8,8 +8,6 @@ import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.VBox
 import javafx.stage.*
-import logic.Bus
-import views.circuitView.BusesView
 import javafx.scene.control.ToolBar
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -17,15 +15,13 @@ import views.circuitView.CircuitView
 import views.truthTable.TruthTable
 
 class Main : Application() {
-    val inBuses = BusesView()//dddddddddddddddddddddddddddddddddd
-    val outBus = BusesView.BusView("y",Bus.Out())//dddddddddddddd
+    val circuitView  = CircuitView()
     val console = TextArea()
     val borderPane = BorderPane()
-    val circuitView = CircuitView()
     val truthTableWindow = VBox()
     var truthTable = TruthTable()
     val menuBar = MainMenuBar(this)
-    val splitPane = SplitPane(circuitView, truthTableWindow)
+    val splitPane = SplitPane(ScrollPane(circuitView), truthTableWindow)
     val scene = Scene(borderPane, 500.0, 500.0)
 
     override fun start(primaryStage: Stage) {
@@ -67,7 +63,6 @@ class Main : Application() {
 
         /*BorderPane*/
         borderPane.top = VBox(menuBar)
-        circuitView.content = inBuses
         borderPane.center = splitPane
         borderPane.left = toolBar
         console.prefHeight = 75.0
@@ -82,7 +77,7 @@ class Main : Application() {
 
     fun check() : Boolean{
         try {
-            outBus.bus.calculateValue()
+            circuitView.circuit.outBus.calculateValue()
             return true
         } catch (ex: IllegalArgumentException) {
             printMessage(ex.localizedMessage)
@@ -92,15 +87,6 @@ class Main : Application() {
 
     fun printMessage(message : String){
         console.text = message
-    }
-
-    fun deleteBus(i : Int){
-        try {
-            inBuses.children.remove(3, 6)
-        }
-        catch (ex: Exception ){
-            printMessage(ex.toString())
-        }
     }
 
     companion object {
