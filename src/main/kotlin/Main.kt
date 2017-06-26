@@ -1,5 +1,6 @@
 import gui.AddController
 import gui.MainMenuBar
+import gui.RenameBusController
 import javafx.application.*
 import javafx.event.EventHandler
 import javafx.geometry.Orientation
@@ -31,6 +32,7 @@ class Main : Application() {
         val addButton = Button("",ImageView(Image("add.png")))
         addButton.onAction = EventHandler { AddController().display(this) }
         val editButton = Button("",ImageView(Image("edit.png")))
+        editButton.onAction = EventHandler { RenameBusController().display(this) }
         val checkButton = Button("",ImageView(Image("check.png")))
         checkButton.onAction = EventHandler { this.check() }
         val deleteButton = Button("",ImageView(Image("delete.png")))
