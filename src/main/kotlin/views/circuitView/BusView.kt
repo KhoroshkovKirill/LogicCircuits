@@ -20,9 +20,9 @@ class BusView(name: String, x : Double, val bus: Bus) {
         return difference
     }
 
-    fun moveTo(x: Double){
-        this.line.startX = x
-        this.line.endX = x
-        this.nameText.layoutX = x
+    fun move(difference : Double){
+        this.line.startX += difference
+        this.line.endX += difference
+        this.nameText.layoutX += difference
     }
 }
