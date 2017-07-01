@@ -1,7 +1,6 @@
 package views.circuitView
 
-/**
- * Created by khoroshkovkirill on 04.06.17.
- */
-class GateView {
+import logic.Gate
+
+class GateView(val gate: Gate) {
 }

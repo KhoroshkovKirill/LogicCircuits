@@ -20,7 +20,7 @@ class Main : Application() {
     val console = TextArea()
     val borderPane = BorderPane()
     val truthTableWindow = VBox()
-    var truthTable = TruthTable()
+    val truthTable = TruthTable()
     val menuBar = MainMenuBar(this)
     val splitPane = SplitPane(ScrollPane(circuitView), truthTableWindow)
     val scene = Scene(borderPane, 500.0, 500.0)
@@ -50,7 +50,8 @@ class Main : Application() {
         val refreshButton = Button("",ImageView(Image("refresh.png")))
         refreshButton.onAction = EventHandler {
             //if (check()) {
-                truthTable = TruthTable(circuitView.circuit)
+                truthTable.refresh(circuitView)
+
             //}
         }
         val closeButton = Button("",ImageView(Image("close.png")))

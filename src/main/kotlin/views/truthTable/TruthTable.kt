@@ -1,13 +1,16 @@
 package views.truthTable
 
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
-import logic.Circuit
+import javafx.scene.layout.GridPane
+import javafx.scene.text.Text
+import views.circuitView.CircuitView
 
-class TruthTable() : TableView<String>() {
-    constructor(circuit: Circuit) : this(){
-        for (element in circuit.inBuses){
-            //this.columns.add(TableColumn<String,String>(element))//element
+class TruthTable : GridPane() {
+
+    fun refresh(circuitView: CircuitView) {
+        this.children.clear()
+        for ((i, element) in circuitView.inBusesView.busList.withIndex()) {
+            val text = Text(element.nameText.text)
+            this.add(text, i, 0)
         }
     }
 }

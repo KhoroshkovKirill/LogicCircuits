@@ -46,3 +46,10 @@
 .split-pane-divider {
    -fx-background-color: black;
 }
+
+.grid-pane{
+    -fx-grid-lines-visible: true;
+    -fx-border-width: 2px;
+    -fx-border-style: solid inside;
+    -fx-background-fill: black, white ;
+}

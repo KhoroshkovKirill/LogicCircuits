@@ -3,14 +3,14 @@ package views.circuitView
 import logic.Bus
 
 class InBusesView(val circuitView: CircuitView) {
-    val busList = mutableListOf<BusView>()
+    val busList = mutableListOf<BusView.IO>()
     var width = 10.0
 
     fun add(name : String, bus : Bus.In) : Double{
-        val busView = BusView(name,width,bus)
+        val busView = BusView.IO(name,width,bus)
         busList.add(busView)
-        circuitView.children.addAll(busView.nameText, busView.line)
-        val difference = busView.nameText.layoutBounds.width + 5.0
+        circuitView.children.addAll(busView.getShapes())
+        val difference = busView.getWidth()
         width += difference
         return difference
     }
