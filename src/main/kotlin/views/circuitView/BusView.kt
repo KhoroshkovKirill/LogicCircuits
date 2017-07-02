@@ -4,27 +4,28 @@ import javafx.scene.shape.Line
 import javafx.scene.shape.Shape
 import javafx.scene.text.Text
 import logic.Bus
+import Deletable
 
-sealed class BusView {
+sealed class BusView : ElementView {
     abstract val line : Line
     abstract fun move(difference: Double)
 
-    class Local(x: Double, startY: Double, finishY: Double) : BusView() {
-        override val line = Line(x,startY,x,finishY)
+    class Local(x: Double, startY: Double, endY: Double) : BusView() {
+        override val line =  if (startY < endY) Line(x,startY,x,endY) else Line(x,endY,x,startY)
+
+        override fun getShapes(): List<Shape> {
+            return listOf(this.line)
+        }
 
         override fun move(difference: Double) {
             this.line.startX += difference
             this.line.endX += difference
         }
-
-        fun getShapes() : Line {
-            return this.line
-        }
     }
 
-    class IO(name: String, x: Double, bus: Bus) : BusView() {
+    sealed class IO(name: String, x: Double) : BusView() {
         val nameText = Text(name)
-        override val line = Line(x, 30.0, x, 400.0)
+        override val line = Line(x, 30.0, x, 300.0)
 
         init {
             nameText.layoutX = x
@@ -38,7 +39,7 @@ sealed class BusView {
             return difference
         }
 
-        fun getShapes() : List<Shape>{
+        override fun getShapes() : List<Shape>{
             return listOf(this.line, this.nameText)
         }
 
@@ -52,5 +53,13 @@ sealed class BusView {
             this.nameText.layoutX += difference
         }
 
+        class In(name: String, x: Double, val bus: Bus.In) : BusView.IO(name, x) , Deletable{
+
+            override fun prepareToDelete(){
+                this.bus.prepareToDelete()
+            }
+        }
+
+        class Out(name: String, x: Double, val bus: Bus.Out) : BusView.IO(name, x)
     }
 }

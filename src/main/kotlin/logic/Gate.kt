@@ -1,10 +1,10 @@
 package logic
 
+import Deletable
 import java.lang.IllegalArgumentException
 
-sealed class Gate : LogElement {
+sealed class Gate : LogElement , Deletable {
     abstract val output : Dot.Out
-    abstract fun prepareToDelete()
 
     class Not : logic.Gate(){
         override val output : Dot.Out = Dot.Out(this, true)
@@ -39,7 +39,7 @@ sealed class Gate : LogElement {
                 inputList[index].changePrevious(newPrevious)
             }
             catch (ex : IndexOutOfBoundsException){
-                throw IllegalArgumentException("Выход за предел массива")
+                throw IllegalArgumentException("Выход за предел списка")
             }
         }
 

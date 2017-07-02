@@ -1,0 +1,4 @@
+
+interface Deletable {
+    fun prepareToDelete()
+}

@@ -14,7 +14,7 @@ sealed class Dot : LogElement {
                 previous!!.deleteFromNextList(this)
             }
             if (newPrevious != null){
-                newPrevious.next.add(this)
+                newPrevious.nextDots.add(this)
             }
             previous = newPrevious
         }
@@ -30,20 +30,20 @@ sealed class Dot : LogElement {
     }
 
     class Out(private val previous: LogElement): logic.Dot() {
-        val next = mutableSetOf<Dot.In>()
+        val nextDots = mutableSetOf<Dot.In>() //
 
         constructor(previous: LogElement, isInverted: Boolean) : this(previous){
             this.inversion = isInverted
         }
 
-        fun deleteFromPrevious(){
-            for (inPut in next){
-                inPut.previous = null
+        fun deleteFromPrevious(){ //обнуляет ссылки на эту точку у след. точек
+            for (inDot in nextDots){
+                inDot.previous = null
             }
         }
 
         fun deleteFromNextList(dot: Dot.In){
-            next.remove(dot)
+            nextDots.remove(dot)
         }
 
         override fun calculateValue(): Boolean {

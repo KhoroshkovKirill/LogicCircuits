@@ -13,9 +13,9 @@ class Circuit {
         gates.add(gate)
     }
 
-    fun deleteBus(bus: Bus.In){
+    fun delete(bus: Bus.In){
         if (inBuses.contains(bus)){
-            bus.outPut.deleteFromPrevious()
+            bus.prepareToDelete()
             inBuses.remove(bus)
         }
         else {
@@ -23,7 +23,7 @@ class Circuit {
         }
     }
 
-    fun deleteGate(gate: Gate){
+    fun delete(gate: Gate){
         if (gates.contains(gate)){
             gate.prepareToDelete()
             gates.remove(gate)

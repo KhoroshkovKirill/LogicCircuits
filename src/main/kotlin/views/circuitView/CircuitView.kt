@@ -8,7 +8,7 @@ import logic.Gate
 class CircuitView : Pane(){
     val circuit = Circuit()
     val inBusesView = InBusesView(this)
-    val outBusView = BusView.IO("Y", 20.0, circuit.outBus)
+    val outBusView = BusView.IO.Out("Y", 20.0, circuit.outBus)
     val gatesRowsViev = mutableListOf<GatesRowView>()
     init {
         this.children.addAll(outBusView.getShapes())
@@ -21,6 +21,7 @@ class CircuitView : Pane(){
             val bus = Bus.In()
             circuit.addBus(bus)
             outBusView.move(inBusesView.add(name, bus))
+
             //-gatemove
         }
     }
