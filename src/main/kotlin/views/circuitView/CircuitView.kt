@@ -35,6 +35,18 @@ class CircuitView : Pane(){
         }
     }
 
+    fun deleteInBus(index: Int){
+        try {
+            val difference = -inBusesView.busList[index].getWidth()
+            this.children.removeAll(inBusesView.remove(index))
+            outBusView.move(difference)
+            //-gatemove
+        }
+        catch (ex : IndexOutOfBoundsException){
+            throw IndexOutOfBoundsException("Выход за предел списка")
+        }
+    }
+
     fun renameOutBus(newName: String){
         if (newName == "") {
             throw IllegalArgumentException("Шину следует назвать")

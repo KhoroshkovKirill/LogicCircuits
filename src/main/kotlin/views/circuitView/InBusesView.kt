@@ -1,5 +1,6 @@
 package views.circuitView
 
+import javafx.scene.shape.Shape
 import logic.Bus
 
 class InBusesView(val circuitView: CircuitView){
@@ -26,13 +27,15 @@ class InBusesView(val circuitView: CircuitView){
         }
     }
 
-    fun delete(index: Int) : Double{
+    fun remove(index: Int) : List<Shape>{
         try {
             val difference = - busList[index].getWidth()
+            width += difference
+            moveNextBuses(index, difference)
+            val shapes = busList[index].getShapes()
             busList[index].prepareToDelete()
             busList.removeAt(index)
-            moveNextBuses(index + 1, difference)
-            return difference
+            return shapes
         } catch (ex: IndexOutOfBoundsException) {
             throw IllegalArgumentException("Выход за предел списка")
         }

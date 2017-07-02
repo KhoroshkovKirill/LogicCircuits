@@ -1,4 +1,5 @@
 import gui.AddController
+import gui.DeleteBusController
 import gui.MainMenuBar
 import gui.RenameBusController
 import javafx.application.*
@@ -36,7 +37,7 @@ class Main : Application() {
         val checkButton = Button("",ImageView(Image("check.png")))
         checkButton.onAction = EventHandler { this.check() }
         val deleteButton = Button("",ImageView(Image("delete.png")))
-        deleteButton.onAction = EventHandler { TODO() }
+        deleteButton.onAction = EventHandler { DeleteBusController().display(this) }
 
         val toolBar = ToolBar(
                 addButton,
