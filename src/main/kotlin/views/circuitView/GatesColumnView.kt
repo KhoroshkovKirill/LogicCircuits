@@ -11,6 +11,7 @@ class GatesColumnView {
 
     fun addGateView(gateView: GateView){
         gatesView.add(gateView)
+        height += gateView.getHeight()
     }
 
     fun addLocalBus(){

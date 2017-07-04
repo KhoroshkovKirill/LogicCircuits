@@ -23,4 +23,8 @@ class GatesCircuitView(var x : Double, val circuitView : CircuitView) {
         }
         this.x += difference
     }
+
+    fun addColumn(){
+
+    }
 }

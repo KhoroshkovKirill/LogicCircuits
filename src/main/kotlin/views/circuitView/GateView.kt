@@ -22,12 +22,6 @@ sealed class GateView(x: Double, y: Double) : ElementView {
         return rectangle.height + 15.0
     }
 
-    override fun move(difference: Double) {
-        for (element in getShapes()){
-            element.layoutX += difference
-        }
-    }
-
     class Not(x: Double, y: Double, val gate: Gate.Not) : GateView(x, y) {
         override val outDotView: DotView
         init {

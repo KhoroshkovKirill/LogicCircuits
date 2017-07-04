@@ -1,7 +1,7 @@
 package logic
 
 import Deletable
-import java.lang.IllegalArgumentException
+import kotlin.IllegalArgumentException
 
 sealed class Gate : LogElement , Deletable {
     abstract val output : Dot.Out
@@ -29,8 +29,14 @@ sealed class Gate : LogElement , Deletable {
     sealed class Multivariate (inputCount: Int) : logic.Gate() {
         val inputList = arrayListOf<Dot.In>()
         init {
-            for (i in 1..inputCount) {
-                inputList.add(Dot.In())
+            if (inputCount < 2){
+                throw IllegalArgumentException("Количество входов не меньше 2")
+            } else if (inputCount > 10){
+                throw IllegalArgumentException("Количество входов не больше 10")
+            } else {
+                for (i in 1..inputCount) {
+                    inputList.add(Dot.In())
+                }
             }
         }
 

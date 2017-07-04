@@ -9,12 +9,6 @@ import Deletable
 sealed class BusView : ElementView {
     abstract val line : Line
 
-    override fun move(difference: Double) {
-        for (element in getShapes()) {
-            element.layoutX += difference
-        }
-    }
-
     class Local(x: Double, startY: Double, endY: Double) : BusView() {
         override val line =  if (startY < endY) Line(x,startY,x,endY) else Line(x,endY,x,startY)
 
