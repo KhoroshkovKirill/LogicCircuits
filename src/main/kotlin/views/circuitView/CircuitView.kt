@@ -25,8 +25,8 @@ class CircuitView : Pane(){
             val bus = Bus.In()
             circuit.addBus(bus)
             val difference = inBusesView.add(name, bus)
-            outBusView.move(difference)
-            gatesView.moveAll(difference)
+            outBusView.changeLayoutX(difference)
+            gatesView.changeLayoutAllX(difference)
         }
     }
 
@@ -35,8 +35,8 @@ class CircuitView : Pane(){
             throw IllegalArgumentException("Шину следует назвать")
         } else {
             val difference = inBusesView.rename(index,newName)
-            outBusView.move(difference)
-            gatesView.moveAll(difference)
+            outBusView.changeLayoutX(difference)
+            gatesView.changeLayoutAllX(difference)
         }
     }
 
@@ -44,8 +44,8 @@ class CircuitView : Pane(){
         try {
             val difference = -inBusesView.busList[index].getWidth()
             this.children.removeAll(inBusesView.remove(index))
-            outBusView.move(difference)
-            gatesView.moveAll(difference)
+            outBusView.changeLayoutX(difference)
+            gatesView.changeLayoutAllX(difference)
         }
         catch (ex : IndexOutOfBoundsException){
             throw IndexOutOfBoundsException("Выход за предел списка")

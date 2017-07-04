@@ -17,7 +17,7 @@ class GatesCircuitView(var x : Double, val circuitView : CircuitView) {
         circuitView.children.addAll(gateView.getShapes())
     }
 
-    fun moveAll(difference : Double){
+    fun changeLayoutAllX(difference : Double){
         for (element in gatesColumnView){
             element.moveAll(difference)
         }

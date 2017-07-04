@@ -20,7 +20,7 @@ class GatesColumnView {
 
     fun moveAll(difference : Double){
         for (element in gatesView){
-            element.move(difference)
+            element.changeLayoutX(difference)
         }
     }
 }

@@ -44,7 +44,7 @@ class InBusesView(val circuitView: CircuitView){
 
     fun moveNextBuses(index: Int, difference : Double){
         for (i in index..(busList.lastIndex) ){
-            this.busList[i].move(difference)
+            this.busList[i].changeLayoutX(difference)
         }
     }
 
