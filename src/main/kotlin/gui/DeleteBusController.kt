@@ -14,7 +14,7 @@ class DeleteBusController{
 
     fun display(main: Main){
         val stage = Stage()
-        stage.title = "Delete"
+        stage.title = "Delete Bus"
 
         val indexTextField = TextField()
         indexTextField.layoutX = 100.0

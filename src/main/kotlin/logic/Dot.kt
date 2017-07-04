@@ -1,9 +1,9 @@
 package logic
 sealed class Dot : LogElement {
-    protected var inversion = false
+    var isInverted = false
 
-    fun changeInversion(){
-            this.inversion = !this.inversion
+    fun changeInversion() {
+        this.isInverted = !this.isInverted
     }
 
     class In: logic.Dot() {
@@ -21,7 +21,7 @@ sealed class Dot : LogElement {
 
         override fun calculateValue(): Boolean {
             if (this.previous != null) {
-                return previous!!.calculateValue().xor(inversion)
+                return previous!!.calculateValue().xor(isInverted)
             }
             else {
                 throw IllegalArgumentException("К логическому элементу не подведено соединение")
@@ -33,7 +33,7 @@ sealed class Dot : LogElement {
         val nextDots = mutableSetOf<Dot.In>() //
 
         constructor(previous: LogElement, isInverted: Boolean) : this(previous){
-            this.inversion = isInverted
+            this.isInverted = isInverted
         }
 
         fun deleteFromPrevious(){ //обнуляет ссылки на эту точку у след. точек
@@ -47,7 +47,7 @@ sealed class Dot : LogElement {
         }
 
         override fun calculateValue(): Boolean {
-            return this.previous.calculateValue().xor(inversion)
+            return this.previous.calculateValue().xor(isInverted)
         }
     }
 

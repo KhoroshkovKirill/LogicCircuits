@@ -8,7 +8,12 @@ import Deletable
 
 sealed class BusView : ElementView {
     abstract val line : Line
-    abstract fun move(difference: Double)
+
+    override fun move(difference: Double) {
+        for (element in getShapes()) {
+            element.layoutX += difference
+        }
+    }
 
     class Local(x: Double, startY: Double, endY: Double) : BusView() {
         override val line =  if (startY < endY) Line(x,startY,x,endY) else Line(x,endY,x,startY)
@@ -17,10 +22,6 @@ sealed class BusView : ElementView {
             return listOf(this.line)
         }
 
-        override fun move(difference: Double) {
-            this.line.startX += difference
-            this.line.endX += difference
-        }
     }
 
     sealed class IO(name: String, x: Double) : BusView() {
@@ -45,12 +46,6 @@ sealed class BusView : ElementView {
 
         fun getWidth() : Double{
             return this.nameText.layoutBounds.width + 5.0
-        }
-
-        override fun move(difference: Double) {
-            this.line.startX += difference
-            this.line.endX += difference
-            this.nameText.layoutX += difference
         }
 
         class In(name: String, x: Double, val bus: Bus.In) : BusView.IO(name, x) , Deletable{

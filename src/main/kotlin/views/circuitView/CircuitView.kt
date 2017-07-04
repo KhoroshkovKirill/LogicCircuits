@@ -8,8 +8,12 @@ import logic.Gate
 class CircuitView : Pane(){
     val circuit = Circuit()
     val inBusesView = InBusesView(this)
-    val outBusView = BusView.IO.Out("Y", 20.0, circuit.outBus)
-    val gatesRowsViev = mutableListOf<GatesRowView>()
+    val gatesView = GatesCircuitView(inBusesView.width, this)
+    val outBusView = BusView.IO.Out(
+            "Y",
+            inBusesView.width + gatesView.width + 20.0,
+            circuit.outBus
+    )
     init {
         this.children.addAll(outBusView.getShapes())
     }
@@ -20,9 +24,9 @@ class CircuitView : Pane(){
         } else {
             val bus = Bus.In()
             circuit.addBus(bus)
-            outBusView.move(inBusesView.add(name, bus))
-
-            //-gatemove
+            val difference = inBusesView.add(name, bus)
+            outBusView.move(difference)
+            gatesView.moveAll(difference)
         }
     }
 
@@ -30,8 +34,9 @@ class CircuitView : Pane(){
         if (newName == "") {
             throw IllegalArgumentException("Шину следует назвать")
         } else {
-            outBusView.move(inBusesView.rename(index,newName))
-            //-gatemove
+            val difference = inBusesView.rename(index,newName)
+            outBusView.move(difference)
+            gatesView.moveAll(difference)
         }
     }
 
@@ -40,7 +45,7 @@ class CircuitView : Pane(){
             val difference = -inBusesView.busList[index].getWidth()
             this.children.removeAll(inBusesView.remove(index))
             outBusView.move(difference)
-            //-gatemove
+            gatesView.moveAll(difference)
         }
         catch (ex : IndexOutOfBoundsException){
             throw IndexOutOfBoundsException("Выход за предел списка")
@@ -57,6 +62,7 @@ class CircuitView : Pane(){
 
     fun addGateView(gate: Gate){
         circuit.addGate(gate)
+        gatesView.addGateView(gate)
     }
 
 }
