@@ -19,6 +19,13 @@ class MainMenuBar(val main : Main) : MenuBar(){
         menuFile.items.add(itemClose)
 
         /*Edit*/
+        val itemAdd = MenuItem("Add element")
+        itemAdd.onAction = EventHandler { AddController().display(main) }
+        val itemRenameBus = MenuItem("Rename bus")
+        itemRenameBus.onAction = EventHandler { RenameBusController().display(main) }
+        val itemDelete = MenuItem("Delete element")
+        itemDelete.onAction = EventHandler { DeleteController().display(main) }
+        menuEdit.items.addAll(itemAdd,itemRenameBus,itemDelete)
 
         /*View*/
         val itemTruthTable = MenuItem("Truth Table")

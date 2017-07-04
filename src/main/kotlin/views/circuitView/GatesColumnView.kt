@@ -3,8 +3,9 @@ package views.circuitView
 import javafx.scene.shape.Line
 import logic.Dot
 
-class GatesRowView {
+class GatesColumnView {
     var height = 30.0
+    var width = 60.0
     val gatesView = mutableListOf<GateView>()
     val localBuses = mutableMapOf<Dot.Out, Line>()
 

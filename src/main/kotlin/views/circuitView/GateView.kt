@@ -17,6 +17,11 @@ sealed class GateView(x: Double, y: Double) : ElementView {
         rectangle.fill = Paint.valueOf("white")
         rectangle.stroke = Paint.valueOf("black")
     }
+
+    fun getHeight() : Double{
+        return rectangle.height + 15.0
+    }
+
     override fun move(difference: Double) {
         for (element in getShapes()){
             element.layoutX += difference
@@ -50,15 +55,12 @@ sealed class GateView(x: Double, y: Double) : ElementView {
 
             }
             text = Text(x + 10, y + 20, name)
+            rectangle.height = (gate.inputList.size + 1) * 15.0
             outDotView = DotView(
                     x + rectangle.width,
                     y + rectangle.height / 2,
                     gate.output
             )
-        }
-
-        init {
-            rectangle.height = (gate.inputList.size + 1) * 15.0
         }
 
         override fun getShapes(): List<Shape> {

@@ -26,10 +26,10 @@ sealed class Gate : LogElement , Deletable {
         }
     }
 
-    sealed class Multivariate (outputsCount : Int) : logic.Gate() {
+    sealed class Multivariate (inputCount: Int) : logic.Gate() {
         val inputList = arrayListOf<Dot.In>()
         init {
-            for (i in 1..outputsCount) {
+            for (i in 1..inputCount) {
                 inputList.add(Dot.In())
             }
         }
@@ -52,21 +52,21 @@ sealed class Gate : LogElement , Deletable {
             }
         }
 
-        class And(outputsCount: Int) : logic.Gate.Multivariate(outputsCount){
+        class And(inputCount: Int) : logic.Gate.Multivariate(inputCount){
             override val output: Dot.Out  = Dot.Out(this)
             override fun calculateValue(): Boolean {
                 return inputList.all { it.calculateValue() }
             }
         }
 
-        class Or(outputsCount: Int) : logic.Gate.Multivariate(outputsCount){
+        class Or(inputCount: Int) : logic.Gate.Multivariate(inputCount){
             override val output: Dot.Out  = Dot.Out(this)
             override fun calculateValue(): Boolean {
                 return inputList.any { it.calculateValue() }
             }
         }
 
-        class Xor(outputsCount: Int) : logic.Gate.Multivariate(outputsCount){
+        class Xor(inputCount: Int) : logic.Gate.Multivariate(inputCount){
             override val output: Dot.Out  = Dot.Out(this)
             override fun calculateValue(): Boolean {
                 var rez : Boolean = false
