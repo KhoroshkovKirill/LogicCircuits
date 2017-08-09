@@ -49,18 +49,21 @@ class Main : Application() {
         refreshButton.onAction = EventHandler {
             //if (check()) {
                 truthTable.refresh(circuitView)
-
             //}
         }
-        val closeButton = Button("",ImageView(Image("close.png")))
+        val clearButton = Button("",ImageView(Image("clear.png")))
+        clearButton.onAction = EventHandler { truthTable.clear() }
+
+        val closeButton = Button("",ImageView(Image("hide.png")))
         closeButton.onAction = EventHandler { TODO() }
 
         val toolsForTable = ToolBar(
                 refreshButton,
+                clearButton,
                 closeButton
         )
         toolsForTable.orientation = Orientation.HORIZONTAL
-        truthTableWindow.children.addAll(toolsForTable,truthTable)
+        truthTableWindow.children.addAll(toolsForTable,ScrollPane(truthTable))
 
         /*BorderPane*/
         borderPane.top = VBox(menuBar)
@@ -71,7 +74,7 @@ class Main : Application() {
         borderPane.bottom = console
 
         /*Show*/
-        scene.stylesheets.add("style.css")
+        //scene.stylesheets.add("style.css")
         primaryStage.scene = scene
         primaryStage.show()
     }
