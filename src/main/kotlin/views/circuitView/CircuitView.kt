@@ -26,7 +26,7 @@ class CircuitView : Pane(){
             circuit.addBus(bus)
             val difference = inBusesView.add(name, bus)
             outBusView.changeLayoutX(difference)
-            gatesView.changeLayoutAllX(difference)
+            gatesView.moveNextColumns(0, difference)
         }
     }
 
@@ -36,7 +36,7 @@ class CircuitView : Pane(){
         } else {
             val difference = inBusesView.rename(index,newName)
             outBusView.changeLayoutX(difference)
-            gatesView.changeLayoutAllX(difference)
+            gatesView.moveNextColumns(0, difference)
         }
     }
 
@@ -46,11 +46,18 @@ class CircuitView : Pane(){
             circuit.delete(inBusesView.busList[index].bus)
             this.children.removeAll(inBusesView.remove(index))
             outBusView.changeLayoutX(difference)
-            gatesView.changeLayoutAllX(difference)
+            gatesView.moveNextColumns(0, difference)
         }
         catch (ex : IndexOutOfBoundsException){
             throw IndexOutOfBoundsException("Выход за предел списка")
         }
+    }
+
+    fun deleteGate(i: Int, j: Int){
+        val gateView = gatesView.getGateView(i, j)
+        circuit.delete(gateView.gate)
+        this.children.removeAll(gateView.getShapes())
+        outBusView.changeLayoutX(gatesView.removeGate(i, j))
     }
 
     fun renameOutBus(newName: String){
@@ -63,11 +70,19 @@ class CircuitView : Pane(){
 
     fun addGateView(gate: Gate){
         circuit.addGate(gate)
-        gatesView.addGateView(gate)
+        val gateView =
+                when (gate){
+                    is Gate.Not -> GateView.Not(gate)
+                    is Gate.Multivariate -> GateView.Multivariate(gate)
+                }
+        this.children.addAll(gateView.getShapes())
+        gatesView.addGateView(gateView)
     }
 
-    fun moveGate(i: Int, j: Int, newColumn: Int) : Double{
-        val gateView = gatesView.remove(i,j)
+    fun shiftGate(i: Int, j: Int, newColumn: Int) : Double{
+        val gateView = gatesView.getGateView(i, j)
+        val difference = gatesView.removeGate(i,j)
+        this.outBusView.changeLayoutX(difference)
         return gatesView.putAt(newColumn,gateView)
     }
 

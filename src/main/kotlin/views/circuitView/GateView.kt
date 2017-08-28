@@ -6,7 +6,7 @@ import javafx.scene.shape.Shape
 import javafx.scene.text.Text
 import logic.Gate
 
-sealed class GateView : ElementView {
+sealed class GateView(open val gate: Gate) : ElementView {
     val width : Double = 40.0
     val rectangle = Rectangle()
     abstract val outDotView: DotView
@@ -24,7 +24,13 @@ sealed class GateView : ElementView {
         return rectangle.height + 15.0
     }
 
-    class Not(val gate: Gate.Not) : GateView() {
+    fun changeLayoutY(difference : Double){
+        for (element in this.getShapes()){
+            element.layoutY += difference
+        }
+    }
+
+    class Not(override val gate: Gate.Not) : GateView(gate) {
         override val outDotView: DotView
         init {
             rectangle.height = 30.0
@@ -46,7 +52,7 @@ sealed class GateView : ElementView {
         }
     }
 
-    class Multivariate(val gate: Gate.Multivariate) : GateView(){
+    class Multivariate(override val gate: Gate.Multivariate) : GateView(gate){
         val text : Text
         override val outDotView: DotView
         init {

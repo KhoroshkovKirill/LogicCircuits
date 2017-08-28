@@ -74,7 +74,7 @@ class Main : Application() {
         borderPane.bottom = console
 
         /*Show*/
-        //scene.stylesheets.add("style.css")
+        scene.stylesheets.add("style.css")
         primaryStage.scene = scene
         primaryStage.show()
     }

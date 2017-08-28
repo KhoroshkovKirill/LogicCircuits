@@ -73,7 +73,7 @@ class DeleteController(){
         okButtonForGate.layoutY = 160.0
         okButtonForGate.onAction = EventHandler {
             try {
-                //main.circuitView.deleteGate(columnTextField.text.toInt(), rowTextField.text.toInt())
+                main.circuitView.deleteGate(columnTextField.text.toInt(), rowTextField.text.toInt())
                 stage.close()
             }
             catch (ex : NumberFormatException){

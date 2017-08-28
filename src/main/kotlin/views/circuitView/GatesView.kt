@@ -1,18 +1,11 @@
 package views.circuitView
 
-import logic.Gate
 
 class GatesView(var x : Double, val circuitView : CircuitView) {
     var width = 40.0
     val gatesColumnView = mutableListOf(GatesColumnView(x))
 
-    fun addGateView(gate: Gate){
-        val gateView =
-                when (gate){
-                    is Gate.Not -> GateView.Not(gate)
-                    is Gate.Multivariate -> GateView.Multivariate(gate)
-                }
-        circuitView.children.addAll(gateView.getShapes())
+    fun addGateView(gateView: GateView){
         this.putAt(0, gateView)
     }
 
@@ -26,9 +19,9 @@ class GatesView(var x : Double, val circuitView : CircuitView) {
         return difference
     }
 
-    fun changeLayoutAllX(difference : Double){
-        for (element in gatesColumnView){
-            element.moveAll(difference)
+    fun moveNextColumns(index: Int, difference : Double){
+        for (i in index..gatesColumnView.size - 1){
+            gatesColumnView[i].moveAll(difference)
         }
         this.x += difference
     }
@@ -40,8 +33,24 @@ class GatesView(var x : Double, val circuitView : CircuitView) {
         return column.width
     }
 
-    fun remove(i: Int, j: Int) : GateView{
-        return gatesColumnView[j].remove(i)
+    fun removeGate(i: Int, j: Int) : Double{
+        var difference = 0.0
+        gatesColumnView[j].remove(i)
+        if (gatesColumnView[j].gatesView.isEmpty()){
+            difference = this.removeColumn(j)
+        }
+        return difference
+    }
+
+    fun removeColumn(index: Int) : Double{
+        gatesColumnView.removeAt(index)
+        val difference =  -gatesColumnView[index].width
+        this.moveNextColumns(index + 1, difference)
+        return difference
+    }
+
+    fun getGateView(i: Int, j: Int) : GateView{
+        return gatesColumnView[j].gatesView[i]
     }
 
 }

@@ -27,10 +27,16 @@ class GatesColumnView(var x: Double) {
         x += difference
     }
 
-    fun remove(i: Int) : GateView{
-        val gateView = gatesView[i]
-        height -= gatesView[i].getHeight()
+    fun moveNextGates(index: Int, difference : Double) {
+        for (i in index..(gatesView.lastIndex)) {
+            this.gatesView[i].changeLayoutY(difference)
+        }
+    }
+
+    fun remove(i: Int){
+        val difference = -gatesView[i].getHeight()
+        height += difference
+        moveNextGates(i + 1, difference)
         gatesView.removeAt(i)
-        return gateView
     }
 }
