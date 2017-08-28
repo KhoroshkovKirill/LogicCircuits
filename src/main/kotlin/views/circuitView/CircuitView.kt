@@ -8,7 +8,7 @@ import logic.Gate
 class CircuitView : Pane(){
     val circuit = Circuit()
     val inBusesView = InBusesView(this)
-    val gatesView = GatesCircuitView(inBusesView.width, this)
+    val gatesView = GatesView(inBusesView.width, this)
     val outBusView = BusView.IO.Out(
             "Y",
             inBusesView.width + gatesView.width + 20.0,
@@ -43,6 +43,7 @@ class CircuitView : Pane(){
     fun deleteInBus(index: Int){
         try {
             val difference = -inBusesView.busList[index].getWidth()
+            circuit.delete(inBusesView.busList[index].bus)
             this.children.removeAll(inBusesView.remove(index))
             outBusView.changeLayoutX(difference)
             gatesView.changeLayoutAllX(difference)
@@ -63,6 +64,11 @@ class CircuitView : Pane(){
     fun addGateView(gate: Gate){
         circuit.addGate(gate)
         gatesView.addGateView(gate)
+    }
+
+    fun moveGate(i: Int, j: Int, newColumn: Int) : Double{
+        val gateView = gatesView.remove(i,j)
+        return gatesView.putAt(newColumn,gateView)
     }
 
 }

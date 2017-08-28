@@ -5,7 +5,7 @@ import javafx.scene.shape.Circle
 import javafx.scene.shape.Shape
 import logic.Dot
 
-class DotView(x : Double, y: Double, val dot: Dot) : Circle() {
+class DotView(val dot: Dot) : Circle() {
 
     init {
         this.fill = Paint.valueOf("white")
@@ -17,9 +17,6 @@ class DotView(x : Double, y: Double, val dot: Dot) : Circle() {
         else{
             this.radius = 0.0
         }
-
-        this.layoutX = x
-        this.layoutY = y
     }
 
     fun changeInversion(){

@@ -6,31 +6,39 @@ import javafx.scene.shape.Shape
 import javafx.scene.text.Text
 import logic.Gate
 
-sealed class GateView(x: Double, y: Double) : ElementView {
+sealed class GateView : ElementView {
     val width : Double = 40.0
-    val rectangle = Rectangle(x, y)
+    val rectangle = Rectangle()
     abstract val outDotView: DotView
     init {
         rectangle.width = width
-        rectangle.layoutX = x
-        rectangle.layoutY = y
         rectangle.fill = Paint.valueOf("white")
         rectangle.stroke = Paint.valueOf("black")
     }
+
+    abstract fun setLayoutY(y: Double)
+
+    abstract fun setLayoutX(x: Double)
 
     fun getHeight() : Double{
         return rectangle.height + 15.0
     }
 
-    class Not(x: Double, y: Double, val gate: Gate.Not) : GateView(x, y) {
+    class Not(val gate: Gate.Not) : GateView() {
         override val outDotView: DotView
         init {
             rectangle.height = 30.0
-            outDotView = DotView(
-                    x + rectangle.width,
-                    y + rectangle.height / 2,
-                    gate.output
-            )
+            outDotView = DotView(gate.output)
+        }
+
+        override fun setLayoutX(x: Double) {
+            outDotView.layoutX = x + rectangle.width
+            rectangle.layoutX = x
+        }
+
+        override fun setLayoutY(y: Double) {
+            outDotView.layoutY = y + rectangle.height / 2
+            rectangle.layoutY = y
         }
 
         override fun getShapes(): List<Shape> {
@@ -38,7 +46,7 @@ sealed class GateView(x: Double, y: Double) : ElementView {
         }
     }
 
-    class Multivariate(x: Double, y: Double, val gate: Gate.Multivariate) : GateView(x, y){
+    class Multivariate(val gate: Gate.Multivariate) : GateView(){
         val text : Text
         override val outDotView: DotView
         init {
@@ -48,17 +56,26 @@ sealed class GateView(x: Double, y: Double) : ElementView {
                 is Gate.Multivariate.Xor -> "=1"
 
             }
-            text = Text(x + 10, y + 20, name)
+            text = Text(name)
             rectangle.height = (gate.inputList.size + 1) * 15.0
-            outDotView = DotView(
-                    x + rectangle.width,
-                    y + rectangle.height / 2,
-                    gate.output
-            )
+            outDotView = DotView(gate.output)
+        }
+
+        override fun setLayoutX(x: Double) {
+            outDotView.layoutX = x + rectangle.width
+            rectangle.layoutX = x
+            text.layoutX = x + 10
+        }
+
+        override fun setLayoutY(y: Double) {
+            outDotView.layoutY = y + rectangle.height / 2
+            rectangle.layoutY = y
+            text.layoutY = y + 20
         }
 
         override fun getShapes(): List<Shape> {
             return listOf(rectangle, text, outDotView)
         }
+
     }
 }
