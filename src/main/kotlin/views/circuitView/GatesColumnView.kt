@@ -2,7 +2,6 @@ package views.circuitView
 
 import javafx.scene.shape.Line
 import logic.Dot
-
 class GatesColumnView(var x: Double) {
     var height = 30.0
     var width = 60.0
@@ -27,7 +26,7 @@ class GatesColumnView(var x: Double) {
         x += difference
     }
 
-    fun moveNextGates(index: Int, difference : Double) {
+    fun moveNextGates(index: Int, difference : Double){
         for (i in index..(gatesView.lastIndex)) {
             this.gatesView[i].changeLayoutY(difference)
         }

@@ -76,7 +76,8 @@ class CircuitView : Pane(){
                     is Gate.Multivariate -> GateView.Multivariate(gate)
                 }
         this.children.addAll(gateView.getShapes())
-        gatesView.addGateView(gateView)
+        val difference = gatesView.addGateView(gateView)
+        outBusView.changeLayoutX(difference)
     }
 
     fun shiftGate(i: Int, j: Int, newColumn: Int) : Double{

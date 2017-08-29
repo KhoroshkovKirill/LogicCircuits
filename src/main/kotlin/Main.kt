@@ -20,7 +20,7 @@ class Main : Application() {
     val truthTableWindow = VBox()
     val truthTable = TruthTable()
     val menuBar = MainMenuBar(this)
-    val splitPane = SplitPane(ScrollPane(circuitView), truthTableWindow)
+    var splitPane = SplitPane(ScrollPane(circuitView), truthTableWindow)
     val scene = Scene(borderPane, 500.0, 500.0)
 
     override fun start(primaryStage: Stage) {
@@ -55,7 +55,9 @@ class Main : Application() {
         clearButton.onAction = EventHandler { truthTable.clear() }
 
         val closeButton = Button("",ImageView(Image("hide.png")))
-        closeButton.onAction = EventHandler { TODO() }
+        closeButton.onAction = EventHandler {
+            splitPane.items.remove(truthTableWindow)
+        }
 
         val toolsForTable = ToolBar(
                 refreshButton,

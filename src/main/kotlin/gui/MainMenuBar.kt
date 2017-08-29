@@ -29,7 +29,11 @@ class MainMenuBar(val main : Main) : MenuBar(){
 
         /*View*/
         val itemTruthTable = MenuItem("Truth Table")
-        itemTruthTable.onAction = EventHandler { TODO() }
+        itemTruthTable.onAction = EventHandler {
+            if (!main.splitPane.items.contains(main.truthTableWindow)) {
+                main.splitPane.items.add(main.truthTableWindow)
+            }
+        }
         menuView.items.add(itemTruthTable)
 
         /*Run*/
