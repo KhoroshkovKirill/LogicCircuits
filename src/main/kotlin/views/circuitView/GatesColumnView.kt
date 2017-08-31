@@ -9,6 +9,7 @@ class GatesColumnView(var x: Double) {
     val localBuses = mutableMapOf<Dot.Out, Line>()
 
     fun addGateView(gateView: GateView){
+        gateView.i = gatesView.size
         gatesView.add(gateView)
         gateView.setLayoutY(this.height + 10.0)
         gateView.setLayoutX(this.x)
@@ -29,6 +30,7 @@ class GatesColumnView(var x: Double) {
     fun moveNextGates(index: Int, difference : Double){
         for (i in index..(gatesView.lastIndex)) {
             this.gatesView[i].changeLayoutY(difference)
+            this.gatesView[i].i--
         }
     }
 

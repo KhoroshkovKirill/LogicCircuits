@@ -1,4 +1,5 @@
 package logic
+
 sealed class Dot : LogElement {
     var isInverted = false
 
@@ -30,7 +31,7 @@ sealed class Dot : LogElement {
     }
 
     class Out(private val previous: LogElement): logic.Dot() {
-        val nextDots = mutableSetOf<Dot.In>() //
+        val nextDots = mutableSetOf<Dot.In>()
 
         constructor(previous: LogElement, isInverted: Boolean) : this(previous){
             this.isInverted = isInverted

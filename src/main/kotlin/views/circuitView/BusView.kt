@@ -5,6 +5,7 @@ import javafx.scene.shape.Shape
 import javafx.scene.text.Text
 import logic.Bus
 import Deletable
+import logic.Dot
 
 sealed class BusView : ElementView {
     abstract val line : Line
@@ -42,11 +43,16 @@ sealed class BusView : ElementView {
             return this.nameText.layoutBounds.width + 5.0
         }
 
-        class In(name: String, x: Double, val bus: Bus.In) : BusView.IO(name, x) , Deletable{
+        class In(name: String, x: Double, val bus: Bus.In) : BusView.IO(name, x) , Deletable, Previous{
 
             override fun prepareToDelete(){
                 this.bus.prepareToDelete()
             }
+
+            override fun getOut() : Dot.Out{
+                return this.bus.outPut
+            }
+
         }
 
         class Out(name: String, x: Double, val bus: Bus.Out) : BusView.IO(name, x)

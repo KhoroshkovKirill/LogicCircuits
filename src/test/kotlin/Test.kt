@@ -5,7 +5,7 @@ import org.junit.Test
 
 class Test {
 
-    @Test
+    /*@Test
     fun circuitOne(){
         val circuit = Circuit()
         val x1 = Bus.In()
@@ -50,5 +50,5 @@ class Test {
                      " " +
                      if (y) "1" else "0")
         }
-    }
+    }*/
 }

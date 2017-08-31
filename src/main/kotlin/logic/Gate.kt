@@ -8,11 +8,7 @@ sealed class Gate : LogElement , Deletable {
 
     class Not : logic.Gate(){
         override val output : Dot.Out = Dot.Out(this, true)
-        private val input : Dot.In = Dot.In()
-
-        fun changeInPut(newPrevious: Dot.Out?) {
-            input.changePrevious(newPrevious)
-        }
+        val input : Dot.In = Dot.In()
 
         override fun prepareToDelete(){
             output.deleteFromPrevious()
@@ -27,7 +23,7 @@ sealed class Gate : LogElement , Deletable {
     }
 
     sealed class Multivariate (inputCount: Int) : logic.Gate() {
-        val inputList = arrayListOf<Dot.In>()
+        val inputList = mutableListOf<Dot.In>()
         init {
             if (inputCount < 2){
                 throw IllegalArgumentException("Количество входов не меньше 2")
@@ -37,15 +33,6 @@ sealed class Gate : LogElement , Deletable {
                 for (i in 1..inputCount) {
                     inputList.add(Dot.In())
                 }
-            }
-        }
-
-        fun changeInPut(index : Int, newPrevious: Dot.Out?){
-            try {
-                inputList[index].changePrevious(newPrevious)
-            }
-            catch (ex : IndexOutOfBoundsException){
-                throw IllegalArgumentException("Выход за предел списка")
             }
         }
 

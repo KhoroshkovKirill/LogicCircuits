@@ -8,6 +8,8 @@ import java.lang.Math.pow
 class TruthTable : GridPane() {
     init {
         this.isGridLinesVisible = true
+        this.hgap = 4.0
+        this.vgap = 2.0
         //
         println(this.gridLinesVisibleProperty())
         println(this.isGridLinesVisible)
@@ -45,7 +47,7 @@ class TruthTable : GridPane() {
             }
             //////////////////////////////////////////////////////////////
             val y = Text("yy")//if (output.calculateValue()) "1" else "0")
-            this.add(y, count + 1, rowIndex + 1)
+            this.add(y, count, rowIndex + 1)
         }
     }
 }

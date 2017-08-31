@@ -1,32 +1,60 @@
 package views.circuitView
 
 import javafx.scene.paint.Paint
-import javafx.scene.shape.Circle
-import javafx.scene.shape.Shape
 import logic.Dot
+import views.circuitView.ShapesLC.CircleLC
 
-class DotView(val dot: Dot) : Circle() {
+sealed class DotView(elementOwner: ElementView) : CircleLC(elementOwner) {
 
     init {
         this.fill = Paint.valueOf("white")
         this.stroke = Paint.valueOf("black")
+    }
 
-        if (this.dot.isInverted){
-            this.radius = 4.0
+    abstract fun changeInversion()
+
+    class In(val dot: Dot.In, elementOwner: ElementView) : DotView(elementOwner){
+
+        init {
+            if (this.dot.isInverted){
+                this.radius = 4.0
+            }
+            else{
+                this.radius = 0.0
+            }
         }
-        else{
-            this.radius = 0.0
+
+        override fun changeInversion(){
+            if (this.dot.isInverted){
+                this.radius = 0.0
+            }
+            else{
+                this.radius = 4.0
+            }
+            this.dot.changeInversion()
         }
     }
 
-    fun changeInversion(){
-        if (this.dot.isInverted){
-            this.radius = 0.0
+    class Out(val dot: Dot.Out, elementOwner: ElementView) : DotView(elementOwner){
+
+        init {
+            if (this.dot.isInverted){
+                this.radius = 4.0
+            }
+            else{
+                this.radius = 0.0
+            }
         }
-        else{
-            this.radius = 4.0
+
+        override fun changeInversion(){
+            if (this.dot.isInverted){
+                this.radius = 0.0
+            }
+            else{
+                this.radius = 4.0
+            }
+            this.dot.changeInversion()
         }
-        this.dot.changeInversion()
     }
 
 }

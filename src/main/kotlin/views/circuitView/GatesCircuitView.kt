@@ -1,7 +1,7 @@
 package views.circuitView
 
 
-class GatesView(var x : Double, val circuitView : CircuitView) {
+class GatesCircuitView(var x : Double, val circuitView : CircuitView) {
     var width = 0.0
     val gatesColumnView = mutableListOf<GatesColumnView>()
 
@@ -14,6 +14,7 @@ class GatesView(var x : Double, val circuitView : CircuitView) {
         if (columnIndex >= gatesColumnView.size){
             difference = this.addColumn()
         }
+        gateView.j = columnIndex
         this.gatesColumnView[columnIndex].addGateView(gateView)
         return difference
     }

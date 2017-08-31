@@ -10,6 +10,7 @@ import javafx.stage.*
 import javafx.scene.control.ToolBar
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.input.MouseButton
 import views.circuitView.CircuitView
 import views.truthTable.TruthTable
 
@@ -86,7 +87,7 @@ class Main : Application() {
             circuitView.circuit.outBus.calculateValue()
             return true
         } catch (ex: IllegalArgumentException) {
-            printMessage(ex.localizedMessage)
+            this.printMessage(ex.localizedMessage)
             return false
         }
     }
