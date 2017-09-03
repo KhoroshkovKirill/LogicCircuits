@@ -15,16 +15,9 @@ sealed class Bus: LogElement {
     }
 
     class Out: logic.Bus(){
-        var inPut: Dot.Out? = null
+        val input : Dot.In = Dot.In()
 
-        override fun calculateValue() : Boolean{
-            if (this.inPut != null) {
-                return inPut!!.calculateValue()
-            }
-            else {
-                throw IllegalArgumentException("К выходной шине не подведено соединение")
-            }
-        }
+        override fun calculateValue() : Boolean = input.calculateValue()
     }
 
 }

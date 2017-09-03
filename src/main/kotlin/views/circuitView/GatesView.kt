@@ -1,7 +1,7 @@
 package views.circuitView
 
 
-class GatesCircuitView(var x : Double, val circuitView : CircuitView) {
+class GatesView(var x : Double, val circuitView : CircuitView) {
     var width = 0.0
     val gatesColumnView = mutableListOf<GatesColumnView>()
 
@@ -19,7 +19,7 @@ class GatesCircuitView(var x : Double, val circuitView : CircuitView) {
         return difference
     }
 
-    fun moveNextColumns(index: Int, difference : Double){
+    fun moveColumnsFrom(index: Int, difference : Double){
         for (i in index..gatesColumnView.size - 1){
             gatesColumnView[i].moveAll(difference)
         }
@@ -43,9 +43,14 @@ class GatesCircuitView(var x : Double, val circuitView : CircuitView) {
     }
 
     fun removeColumn(index: Int) : Double{
-        val difference =  -gatesColumnView[index].width
+        val difference = -gatesColumnView[index].width
         gatesColumnView.removeAt(index)
-        this.moveNextColumns(index, difference)
+        for (i in index..gatesColumnView.lastIndex){
+            for (element in gatesColumnView[i].gatesView){
+                element.j--
+            }
+        }
+        this.moveColumnsFrom(index, difference)
         return difference
     }
 

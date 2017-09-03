@@ -5,6 +5,7 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
 import javafx.scene.input.MouseButton
 import javafx.scene.paint.Paint
+import javafx.scene.shape.Line
 import javafx.scene.shape.Shape
 import javafx.scene.text.Text
 import logic.Dot
@@ -14,8 +15,10 @@ import views.circuitView.ShapesLC.TextLC
 
 sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitView: CircuitView) : ElementView, Previous {
     val width : Double = 40.0
+    abstract var height : Double
     val rectangle = RectangleLC(this)
-    abstract val outDotView: DotView
+    val linesBetweenBuses = mutableListOf<Line>()
+    abstract val outDotView: DotView.Out
     abstract val contextMenu: ContextMenu
     init {
         rectangle.width = width
@@ -27,6 +30,8 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
 
     abstract fun setLayoutX(x: Double)
 
+    abstract fun getPrevious() : List<Previous>
+
     fun execute(isExecuted: Boolean): GateView {
         if (isExecuted){
             this.getShapes().filter { it !is Text }.forEach { it.fill = Paint.valueOf("aqua") }
@@ -37,14 +42,12 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
         return this
     }
 
-    fun getHeight() : Double{
-        return rectangle.height + 15.0
-    }
-
-    fun changeLayoutY(difference : Double){
-        for (element in this.getShapes()){
-            element.layoutY += difference
-        }
+    fun putLine(line: Line) : Double{
+        linesBetweenBuses.add(line)
+        line.startY = this.rectangle.layoutY + height
+        line.endY = this.rectangle.layoutY + height
+        height += 15.0
+        return 15.0
     }
 
     override fun getOut() : Dot.Out {
@@ -56,6 +59,7 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
         val inDotView = DotView.In(gate.input, this)
         val inDotItem = MenuItem("InPut")
         override val contextMenu = ContextMenu(inDotItem)
+        override var height: Double = 0.0
         init {
             rectangle.height = 30.0
             inDotItem.setOnAction {
@@ -71,6 +75,7 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
                     }
                 }
             }
+            height = rectangle.height + 15.0
         }
 
         override fun setLayoutX(x: Double) {
@@ -86,14 +91,27 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
         }
 
         override fun getShapes(): List<Shape> {
-            return listOf(rectangle, outDotView, inDotView)
+            val shapes = mutableListOf<Shape>(rectangle, outDotView, inDotView, inDotView.line)
+            shapes.addAll(linesBetweenBuses)
+            return shapes
         }
+
+        override fun getPrevious(): List<Previous> {
+            val previous = mutableListOf<Previous>()
+            if (inDotView.previous is GateView) {
+                previous.addAll((inDotView.previous as GateView).getPrevious())
+            }
+            previous.add(this)
+            return previous
+        }
+
     }
 
     class Multivariate(i: Int, j: Int, override val gate: Gate.Multivariate, circuitView: CircuitView) : GateView(i, j, gate, circuitView){
         val text : TextLC
         val inDotListView = mutableListOf<DotView.In>()
-        override val outDotView: DotView
+        override var height: Double = 0.0
+        override val outDotView: DotView.Out
         override val contextMenu = ContextMenu()
         init {
             val name = when (gate) {
@@ -125,6 +143,7 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
                     }
                 }
             }
+            this.height = rectangle.height + 15.0
         }
 
         override fun setLayoutX(x: Double) {
@@ -148,8 +167,23 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
 
         override fun getShapes(): List<Shape> {
             val shapes = mutableListOf<Shape>(rectangle, text, outDotView)
-            shapes.addAll(inDotListView)
+            shapes.addAll(linesBetweenBuses)
+            for (element in inDotListView){
+                shapes.add(element)
+                shapes.add(element.line)
+            }
             return shapes
+        }
+
+        override fun getPrevious(): List<Previous> {
+            val previous = mutableListOf<Previous>()
+            for (dot in inDotListView){
+                if (dot.previous is GateView) {
+                    previous.addAll((dot.previous as GateView).getPrevious())
+                }
+            }
+            previous.add(this)
+            return previous
         }
 
     }
