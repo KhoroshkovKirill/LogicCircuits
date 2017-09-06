@@ -48,9 +48,9 @@ class Main : Application() {
         /*Truth table*/
         val refreshButton = Button("",ImageView(Image("refresh.png")))
         refreshButton.onAction = EventHandler {
-            //if (check()) {
+            if (check()) {
                 truthTable.refresh(circuitView)
-            //}
+            }
         }
         val clearButton = Button("",ImageView(Image("clear.png")))
         clearButton.onAction = EventHandler { truthTable.clear() }

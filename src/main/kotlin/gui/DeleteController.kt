@@ -15,8 +15,8 @@ class DeleteController(){
         val stage = Stage()
         stage.title = "Delete"
 
-        /*Bus Tab*/
-        val tabForBus = Tab("Bus")
+        /*ForBus Tab*/
+        val tabForBus = Tab("ForBus")
         tabForBus.isClosable = false
         val paneForBus = Pane()
         val indexBusField = TextField()
@@ -53,8 +53,8 @@ class DeleteController(){
         paneForBus.children.addAll(indexText,messageForBus, okButtonForBus, cancelButtonForBus, indexBusField)
         tabForBus.content = paneForBus
 
-        /*Gate Tab*/
-        val tabForGate = Tab("Gate")
+        /*ForGate Tab*/
+        val tabForGate = Tab("ForGate")
         tabForGate.isClosable = false
         val paneForGate = Pane()
         val columnText = Text(20.0, 27.0, "Column:")

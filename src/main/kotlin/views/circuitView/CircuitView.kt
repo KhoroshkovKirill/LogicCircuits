@@ -2,6 +2,7 @@ package views.circuitView
 
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.Pane
+import javafx.scene.shape.Line
 import logic.Bus
 import logic.Circuit
 import logic.Gate
@@ -12,11 +13,13 @@ class CircuitView : Pane(){
     val inBusesView = InBusesView(this)
     val gatesView = GatesView(inBusesView.width, this)
     var repositoryGate: GateView? = null
-    var repositoryDot: DotView.In? = null
+    var repositoryDot: DotView.In.ForGate? = null
+    var repositoryOutBus : BusView.IO.Out? = null
     val outBusView = BusView.IO.Out(
             "Y",
             inBusesView.width + gatesView.width + 20.0,
-            circuit.outBus
+            circuit.outBus,
+            this
     )
     init {
         this.children.addAll(outBusView.getShapes())
@@ -30,14 +33,23 @@ class CircuitView : Pane(){
                             this.changeInPutOfGate(previous, repositoryGate!!, repositoryDot!!)
                         }
                     }
+                    else if (repositoryOutBus != null && node is ShapeLC){
+                        val previous = node.getOwner()
+                        if (previous is GateView) {
+                            this.changeInPutOfOutBus(previous, repositoryOutBus!!)
+                        }
+                    }
                     else {
                         println(event.pickResult.intersectedNode)///////////////////////////////////////////delete
                     }
-
                 }
                 if (repositoryGate != null) {
                     repositoryGate!!.execute(false)
                     repositoryGate = null
+                }
+                if (repositoryOutBus != null){
+                    repositoryOutBus!!.execute(false)
+                    repositoryOutBus != null
                 }
                 repositoryDot = null
             }
@@ -130,12 +142,16 @@ class CircuitView : Pane(){
         }
     }
 
-    fun putInRepository(gateView: GateView, dotView: DotView.In){
+    fun putInRepository(gateView: GateView, dotView: DotView.In.ForGate){
         this.repositoryDot = dotView
         this.repositoryGate = gateView
     }
 
-    fun changeInPutOfGate(previous: Previous, gateView: GateView, inPut: DotView.In){
+    fun putInRepository(outBusView: BusView.IO.Out){
+        this.repositoryOutBus = outBusView
+    }
+
+    fun changeInPutOfGate(previous: Previous, gateView: GateView, inPut: DotView.In.ForGate){
         if (previous is GateView && !previous.getPrevious().contains(gateView)) {
             if (previous.j >= gateView.j) {
                 this.shiftGate(gateView.i, gateView.j, previous.j + 1)
@@ -145,57 +161,75 @@ class CircuitView : Pane(){
             previous.outDotView.next.add(inPut)
             this.drawLine(gateView.j, inPut, previous)
         }
+        else if(previous is BusView.IO.In){
+            inPut.dot.changePrevious(previous.getOut())
+            inPut.previous = previous
+            this.drawLine(gateView.j, inPut, previous)
+        }
+    }
+
+    fun changeInPutOfOutBus(previous: GateView, busView: BusView.IO.Out) {
+        busView.bus.input.changePrevious(previous.getOut())
+        val dotView = busView.dotView
+        previous.outDotView.next.add(dotView)
+        busView.dotView.layoutY = previous.outDotView.layoutY
+        val localBus = this.drawLineWithLocalBus(
+                this.gatesView.gatesColumnView.lastIndex, dotView.layoutY, previous, dotView.line
+        )
+        dotView.drawLineToBus(localBus)
+        localBus.redraw()
     }
 
     fun drawLine(column: Int, dotView: DotView.In, previous: Previous){
         if (column == 0 && previous is BusView.IO.In){
-            val lineToBus = dotView.drawLineToBus(previous)
-            if (!this.children.contains(lineToBus)) {
-                this.children.add(lineToBus)
-            }
+            dotView.drawLineToBus(previous)
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
-        else{
-            val previousBus: BusView.Local///////////////////////////////////////////////////////////////если не IO
+        else {
+            val previousBus: BusView.Local
             if (gatesView.gatesColumnView[column - 1].localBuses.containsKey(previous)){
                 previousBus = gatesView.gatesColumnView[column - 1].localBuses[previous]!!
             }
             else{
-                previousBus = this.drawLineWithLocalBus(column - 1, dotView.layoutY, previous)
+                previousBus = this.drawLineWithLocalBus(column - 1, dotView.layoutY, previous, dotView.line)
             }
-            val lineToBus = dotView.drawLineToBus(previousBus)
-            previousBus.intersections.add(lineToBus)
-            if (!this.children.contains(lineToBus)) {
-                this.children.add(lineToBus)
-            }
+            dotView.drawLineToBus(previousBus)
+            previousBus.intersections.add(dotView.line)
             previousBus.redraw()
             previousBus.getShapes().forEach { if (!this.children.contains(it)) this.children.add(it) }
         }
     }
 
-    fun drawLineWithLocalBus(column: Int, y: Double, previous: Previous) : BusView.Local{
-        val difference = gatesView.gatesColumnView[column].addLocalBus(previous)
-        gatesView.moveColumnsFrom(column + 1, difference)
-        outBusView.changeLayoutX(difference)
-        val localBus = gatesView.gatesColumnView[column].localBuses[previous]!!
-        val newY = gatesView.gatesColumnView[column].putLine(y, localBus.line)
-        if (column == 0 && previous is BusView.IO.In){
-            val lineToPrevious = localBus.drawLineTo(newY, previous)
-            if (!this.children.contains(lineToPrevious)){
-                this.children.add(lineToPrevious)
+    fun drawLineWithLocalBus(column: Int, y: Double, previous: Previous, line: Line) : BusView.Local{
+        val localBuses = gatesView.gatesColumnView[column].localBuses
+        if (localBuses.containsKey(previous)){
+            localBuses[previous]!!.intersections.add(line)
+            localBuses[previous]!!.redraw()
+            return localBuses[previous]!!
+        }
+        else {
+            val difference = gatesView.gatesColumnView[column].addLocalBus(previous)
+            gatesView.moveColumnsFrom(column + 1, difference)
+            outBusView.changeLayoutX(difference)
+            val localBus = gatesView.gatesColumnView[column].localBuses[previous]!!
+            if (gatesView.gatesColumnView[column].gatesView.contains(previous) && previous is GateView){
+                localBus.drawLineTo(previous.outDotView)
             }
-        }
-        else if (gatesView.gatesColumnView[column].gatesView.contains(previous) && previous is GateView){
-            val lineToPrevious = localBus.drawLineTo(previous.outDotView)
-            if (!this.children.contains(lineToPrevious)){
-                this.children.add(lineToPrevious)
+            else {
+                gatesView.drawLineThrow(column, y, localBus.lineToPrevious)
+                if (column == 0 && previous is BusView.IO.In) {
+                    /////////////////////////////////////////////////////////////////////previous.add
+                    localBus.drawLineTo(previous)
+                }
+                else {
+                    localBus.drawLineTo(this.drawLineWithLocalBus(column - 1, y, previous, localBus.lineToPrevious))
+                }
             }
+            localBus.intersections.add(line)
+            gatesView.gatesColumnView[column].redrawLocalBuses()
+            localBus.getShapes().forEach { if (!this.children.contains(it)) this.children.add(it) }
+            return localBus
         }
-        else{
-            this.drawLineWithLocalBus(column - 1, newY, previous)
-        }
-        localBus.redraw()
-        localBus.getShapes().forEach { if (!this.children.contains(it)) this.children.add(it) }
-        return localBus
     }
 
 }

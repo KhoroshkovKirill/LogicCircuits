@@ -17,7 +17,7 @@ class AddController {
         val stage = Stage()
         stage.title = "Add"
 
-        /*Bus Tab*/
+        /*ForBus Tab*/
         val tabForBus = Tab("Bus")
         tabForBus.isClosable = false
         val paneForBus = Pane()
@@ -49,7 +49,7 @@ class AddController {
         paneForBus.children.addAll(nameText,messageForBus, okButtonForBus, cancelButtonForBus, nameTextField)
         tabForBus.content = paneForBus
 
-        /*Gate Tab*/
+        /*ForGate Tab*/
         val tabForGate = Tab("Gate")
         tabForGate.isClosable = false
         val paneForGate = Pane()

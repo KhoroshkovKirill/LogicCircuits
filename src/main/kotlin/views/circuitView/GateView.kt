@@ -32,14 +32,13 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
 
     abstract fun getPrevious() : List<Previous>
 
-    fun execute(isExecuted: Boolean): GateView {
+    fun execute(isExecuted: Boolean){
         if (isExecuted){
             this.getShapes().filter { it !is Text }.forEach { it.fill = Paint.valueOf("aqua") }
         }
         else{
             this.getShapes().filter { it !is Text }.forEach { it.fill = Paint.valueOf("white") }
         }
-        return this
     }
 
     fun putLine(line: Line) : Double{
@@ -55,8 +54,8 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
     }
 
     class Not(i: Int, j: Int, override val gate: Gate.Not, circuitView: CircuitView) : GateView(i, j, gate, circuitView) {
-        override val outDotView = DotView.Out(gate.output, this)
-        val inDotView = DotView.In(gate.input, this)
+        override val outDotView = DotView.Out.ForGate(gate.output, this)
+        val inDotView = DotView.In.ForGate(gate.input, this)
         val inDotItem = MenuItem("InPut")
         override val contextMenu = ContextMenu(inDotItem)
         override var height: Double = 0.0
@@ -91,8 +90,9 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
         }
 
         override fun getShapes(): List<Shape> {
-            val shapes = mutableListOf<Shape>(rectangle, outDotView, inDotView, inDotView.line)
+            val shapes = mutableListOf<Shape>(rectangle, inDotView, inDotView.line)
             shapes.addAll(linesBetweenBuses)
+            shapes.addAll(outDotView.getShapes())
             return shapes
         }
 
@@ -109,9 +109,9 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
 
     class Multivariate(i: Int, j: Int, override val gate: Gate.Multivariate, circuitView: CircuitView) : GateView(i, j, gate, circuitView){
         val text : TextLC
-        val inDotListView = mutableListOf<DotView.In>()
+        val inDotListView = mutableListOf<DotView.In.ForGate>()
         override var height: Double = 0.0
-        override val outDotView: DotView.Out
+        override val outDotView: DotView.Out.ForGate
         override val contextMenu = ContextMenu()
         init {
             val name = when (gate) {
@@ -123,7 +123,7 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
             text.text = name
             rectangle.height = (gate.inputList.size + 1) * 15.0
             for (element in gate.inputList){
-                inDotListView.add(DotView.In(element, this))
+                inDotListView.add(DotView.In.ForGate(element, this))
             }
             for ((index, element) in inDotListView.withIndex()){
                 val inDotItem = MenuItem("InPut " + index.toString())
@@ -133,7 +133,7 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
                 }
                 contextMenu.items.add(inDotItem)
             }
-            outDotView = DotView.Out(gate.output, this)
+            outDotView = DotView.Out.ForGate(gate.output, this)
             for (element in this.getShapes()) {
                 element.setOnMouseClicked { event: javafx.scene.input.MouseEvent ->
                     run {
@@ -166,12 +166,13 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
         }
 
         override fun getShapes(): List<Shape> {
-            val shapes = mutableListOf<Shape>(rectangle, text, outDotView)
+            val shapes = mutableListOf<Shape>(rectangle, text)
             shapes.addAll(linesBetweenBuses)
             for (element in inDotListView){
                 shapes.add(element)
                 shapes.add(element.line)
             }
+            shapes.addAll(outDotView.getShapes())
             return shapes
         }
 

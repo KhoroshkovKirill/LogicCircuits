@@ -2,18 +2,23 @@ package views.circuitView
 
 import javafx.scene.shape.Line
 import javafx.scene.shape.Shape
-import javafx.scene.text.Text
 import logic.Bus
 import Deletable
+import javafx.geometry.Side
+import javafx.scene.control.ContextMenu
+import javafx.scene.control.MenuItem
+import javafx.scene.input.MouseButton
+import javafx.scene.paint.Paint
 import javafx.scene.shape.Circle
 import logic.Dot
+import views.circuitView.ShapesLC.TextLC
 
 sealed class BusView : ElementView, Line() {
 
     class Local(x: Double) : BusView() {
 
-        val line = Line()
-        val intersections = mutableSetOf(line)
+        var lineToPrevious = Line()
+        val intersections = mutableSetOf(lineToPrevious)
         val dots = mutableListOf<Circle>()
 
         init {
@@ -25,6 +30,7 @@ sealed class BusView : ElementView, Line() {
             val shapes = mutableListOf<Shape>()
             shapes.addAll(this.dots)
             shapes.add(this)
+            shapes.addAll(intersections)
             return shapes
         }
 
@@ -39,38 +45,39 @@ sealed class BusView : ElementView, Line() {
                     if (element.startY != this.startY && element.startY != this.endY) {
                         dots.add(Circle(this.startX, element.startY, 3.0))
                     }
-                    else if (element !== line && element.startY == line.startY && intersections.size > 2 ){
+                    else if (element !== lineToPrevious && element.startY == lineToPrevious.startY && intersections.size > 2 ){
                         dots.add(Circle(this.startX, element.startY, 3.0))
+                    }
+                    if (element !== lineToPrevious) {
+                        element.endX = this.endX
                     }
                 }
                 return true
             }
         }
 
-        fun drawLineTo(y: Double, previousBus: BusView) : Line{
-            line.startX = this.startX
-            line.startY = y
-            line.endX = previousBus.layoutX
-            line.endY = y
-            return line
+        fun drawLineTo(previousBus: BusView) : Line{
+            lineToPrevious.startX = this.startX
+            lineToPrevious.endX = previousBus.startX
+            return lineToPrevious
         }
 
         fun drawLineTo(dotView: DotView.Out) : Line{
-            line.startX = this.startX
-            line.startY = dotView.layoutY
-            line.endX = dotView.layoutX
-            line.endY = dotView.layoutY
-            return line
+            this.intersections.remove(lineToPrevious)
+            this.lineToPrevious = dotView.line
+            this.intersections.add(lineToPrevious)
+            lineToPrevious.startX = this.startX
+            lineToPrevious.startY = dotView.layoutY
+            lineToPrevious.endX = dotView.layoutX
+            lineToPrevious.endY = dotView.layoutY
+            return lineToPrevious
         }
-
     }
 
     sealed class IO(name: String, x: Double) : BusView() {
-        val nameText = Text(name)
+        abstract val nameText: TextLC
 
         init {
-            nameText.layoutX = x
-            nameText.layoutY = 20.0
             this.startX = x
             this.endX = x
             this.startY = 30.0
@@ -84,15 +91,23 @@ sealed class BusView : ElementView, Line() {
             return difference
         }
 
-        override fun getShapes() : List<Shape>{
-            return listOf(this, this.nameText)
-        }
-
         fun getWidth() : Double{
             return this.nameText.layoutBounds.width + 5.0
         }
 
         class In(name: String, x: Double, val bus: Bus.In) : BusView.IO(name, x) , Deletable, Previous{
+
+            val intersections = mutableSetOf<Line>()
+            override val nameText = TextLC(this)
+            init {
+                nameText.text = name
+                nameText.layoutX = x
+                nameText.layoutY = 20.0
+            }
+
+            fun redraw(){
+
+            }
 
             override fun prepareToDelete(){
                 this.bus.prepareToDelete()
@@ -102,23 +117,55 @@ sealed class BusView : ElementView, Line() {
                 return this.bus.outPut
             }
 
-        }
-
-        class Out(name: String, x: Double, val bus: Bus.Out) : BusView.IO(name, x){
-            val line = Line()
-            val dot = Circle()
-            init {
-                dot.radius = 3.0
+            override fun getShapes() : List<Shape>{
+                return listOf(this, this.nameText)
             }
 
-            fun drawLineToBus(busView: BusView.Local) : List<Shape> {
-                line.startY = busView.layoutY
-                line.startX = this.layoutX
-                line.endX = busView.endX
-                line.endY = busView.layoutY
-                dot.centerX = this.layoutX
-                dot.centerY = busView.layoutY
-                return listOf(line, dot)
+        }
+
+        class Out(name: String, x: Double, val bus: Bus.Out, circuitView: CircuitView) : BusView.IO(name, x){
+            val dotView = DotView.In.ForBus(this)
+            val changePreviousItem = MenuItem("Change previous")
+            val clearPreviousItem = MenuItem("Clear previous")
+            val contextMenu = ContextMenu(changePreviousItem, clearPreviousItem)
+            override val nameText = TextLC(this)
+            init {
+                dotView.layoutX = this.startX
+                dotView.layoutY = this.startY
+                nameText.text = name
+                nameText.layoutX = x
+                nameText.layoutY = 20.0
+                changePreviousItem.setOnAction {
+                    this.execute(true)
+                    circuitView.putInRepository(this)
+                }
+                clearPreviousItem.setOnAction {
+                    this.execute(false)
+                }
+                for (element in this.getShapes()) {
+                    element.setOnMouseClicked { event: javafx.scene.input.MouseEvent ->
+                        run {
+                            if (event.button == MouseButton.SECONDARY) {
+                                contextMenu.show(this, Side.RIGHT, 0.0, 0.0)
+                            }
+                        }
+                    }
+                }
+            }
+
+            fun execute(isExecuted: Boolean){
+                if (isExecuted){
+                    this.getShapes().forEach { it.fill = Paint.valueOf("aqua") }
+                }
+                else{
+                    this.getShapes().forEach { it.fill = Paint.valueOf("black") }
+                }
+            }
+
+            override fun getShapes() : List<Shape>{
+                val shapes = mutableListOf<Shape>(this, nameText)
+                shapes.addAll(dotView.getShapes())
+                return shapes
             }
         }
     }

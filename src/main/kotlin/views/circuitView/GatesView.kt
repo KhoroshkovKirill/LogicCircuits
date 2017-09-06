@@ -1,5 +1,7 @@
 package views.circuitView
 
+import javafx.scene.shape.Line
+
 
 class GatesView(var x : Double, val circuitView : CircuitView) {
     var width = 0.0
@@ -21,7 +23,7 @@ class GatesView(var x : Double, val circuitView : CircuitView) {
 
     fun moveColumnsFrom(index: Int, difference : Double){
         for (i in index..gatesColumnView.size - 1){
-            gatesColumnView[i].moveAll(difference)
+            gatesColumnView[i].changeLayoutX(difference)
         }
         this.x += difference
     }
@@ -39,7 +41,23 @@ class GatesView(var x : Double, val circuitView : CircuitView) {
         if (gatesColumnView[j].gatesView.isEmpty()){
             difference = this.removeColumn(j)
         }
+        else{
+            redrawLocalBuses(j)
+        }
         return difference
+    }
+
+    fun redrawLocalBuses(column: Int){
+        gatesColumnView[column].redrawLocalBuses()
+        if (column != 0){
+            gatesColumnView[column - 1].redrawLocalBuses()
+        }
+    }
+
+    fun drawLineThrow(column: Int, y: Double, line: Line) : Double{
+        val newY = gatesColumnView[column].putLine(y, line)
+        redrawLocalBuses(column)
+        return newY
     }
 
     fun removeColumn(index: Int) : Double{

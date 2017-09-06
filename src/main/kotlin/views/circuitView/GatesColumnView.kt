@@ -1,8 +1,9 @@
 package views.circuitView
 
 import javafx.scene.shape.Line
+import javafx.scene.shape.Shape
 
-class GatesColumnView(var x: Double) {
+class GatesColumnView(var x: Double) : ElementView {
     var height = 30.0
     var width = 60.0
     val gatesView = mutableListOf<GateView>()
@@ -27,28 +28,20 @@ class GatesColumnView(var x: Double) {
         }
     }
 
-    fun moveAll(difference : Double){
-        for (element in gatesView){
-            element.changeLayoutX(difference)
-        }
-        for (element in localBuses.values) {
-            element.changeLayoutX(difference)
-        }
-        x += difference
-    }
-
     fun moveNextGates(index: Int, difference : Double){
         for (i in index..(gatesView.lastIndex)) {
             this.gatesView[i].changeLayoutY(difference)
-            this.gatesView[i].i--
         }
     }
 
-    fun remove(i: Int){
-        val difference = -gatesView[i].height
+    fun remove(index: Int){
+        val difference = -gatesView[index].height
         height += difference
-        moveNextGates(i + 1, difference)
-        gatesView.removeAt(i)
+        moveNextGates(index + 1, difference)
+        for (i in index + 1..(gatesView.lastIndex)) {
+            this.gatesView[i].i--
+        }
+        gatesView.removeAt(index)
     }
 
     fun putLine(y: Double, line: Line) : Double{
@@ -66,7 +59,27 @@ class GatesColumnView(var x: Double) {
             }
         }
         val difference =  map[newY]!!.putLine(line)
+        this.height += difference
         moveNextGates(gatesView.indexOf(map[newY]!!) + 1, difference)
         return difference
+    }
+
+    fun redrawLocalBuses(){
+        this.localBuses.values.forEach { it.redraw() }
+    }
+
+    override fun getShapes(): List<Shape> {
+        val shapes = mutableListOf<Shape>()
+        gatesView.forEach { shapes.addAll(it.getShapes()) }
+        localBuses.forEach {
+            shapes.add(it.value)
+            shapes.addAll(it.value.dots)
+        }
+        return shapes
+    }
+
+    override fun changeLayoutX(difference: Double) {
+        super.changeLayoutX(difference)
+        x += difference
     }
 }

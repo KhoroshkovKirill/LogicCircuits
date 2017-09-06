@@ -45,8 +45,7 @@ class TruthTable : GridPane() {
                 val x = Text(if (element.value) "1" else "0")
                 this.add(x, columnIndex, rowIndex + 1)
             }
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-            val y = Text("yy")//if (output.calculateValue()) "1" else "0")
+            val y = Text(if (output.calculateValue()) "1" else "0")
             this.add(y, count, rowIndex + 1)
         }
     }
