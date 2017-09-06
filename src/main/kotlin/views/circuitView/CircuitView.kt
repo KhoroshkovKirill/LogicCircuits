@@ -183,7 +183,7 @@ class CircuitView : Pane(){
     fun drawLine(column: Int, dotView: DotView.In, previous: Previous){
         if (column == 0 && previous is BusView.IO.In){
             dotView.drawLineToBus(previous)
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////previous.redraw()
         }
         else {
             val previousBus: BusView.Local
@@ -218,7 +218,7 @@ class CircuitView : Pane(){
             else {
                 gatesView.drawLineThrow(column, y, localBus.lineToPrevious)
                 if (column == 0 && previous is BusView.IO.In) {
-                    /////////////////////////////////////////////////////////////////////previous.add
+                    //////////////////////////////////////////////////////////////////////////////////////previous.add
                     localBus.drawLineTo(previous)
                 }
                 else {
