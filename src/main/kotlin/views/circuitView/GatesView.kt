@@ -48,9 +48,9 @@ class GatesView(var x : Double, val circuitView : CircuitView) {
     }
 
     fun redrawLocalBuses(column: Int){
-        gatesColumnView[column].redrawLocalBuses()
+        gatesColumnView[column].getLocalBuses()
         if (column != 0){
-            gatesColumnView[column - 1].redrawLocalBuses()
+            gatesColumnView[column - 1].getLocalBuses()
         }
     }
 

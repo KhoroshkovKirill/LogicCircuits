@@ -64,8 +64,8 @@ class GatesColumnView(var x: Double) : ElementView {
         return difference
     }
 
-    fun redrawLocalBuses(){
-        this.localBuses.values.forEach { it.redraw() }
+    fun getLocalBuses() : List<BusView.Local>{
+        return this.localBuses.values.toList()
     }
 
     override fun getShapes(): List<Shape> {

@@ -15,6 +15,8 @@ import views.circuitView.ShapesLC.TextLC
 
 sealed class BusView : ElementView, Line() {
 
+    abstract fun redraw(): Boolean
+
     class Local(x: Double) : BusView() {
 
         var lineToPrevious = Line()
@@ -34,7 +36,7 @@ sealed class BusView : ElementView, Line() {
             return shapes
         }
 
-        fun redraw(): Boolean{
+        override fun redraw(): Boolean{
             if (intersections.isEmpty()){
                 return false
             }
@@ -98,6 +100,7 @@ sealed class BusView : ElementView, Line() {
         class In(name: String, x: Double, val bus: Bus.In) : BusView.IO(name, x) , Deletable, Previous{
 
             val intersections = mutableSetOf<Line>()
+            val dots = mutableListOf<Circle>()
             override val nameText = TextLC(this)
             init {
                 nameText.text = name
@@ -105,8 +108,17 @@ sealed class BusView : ElementView, Line() {
                 nameText.layoutY = 20.0
             }
 
-            fun redraw(){
-
+            override fun redraw(): Boolean{
+                if (intersections.isEmpty()){
+                    return false
+                }
+                else {
+                    for (element in intersections) {
+                        dots.add(Circle(this.startX, element.startY, 3.0))
+                        element.endX = this.endX
+                    }
+                    return true
+                }
             }
 
             override fun prepareToDelete(){
@@ -124,23 +136,31 @@ sealed class BusView : ElementView, Line() {
         }
 
         class Out(name: String, x: Double, val bus: Bus.Out, circuitView: CircuitView) : BusView.IO(name, x){
-            val dotView = DotView.In.ForBus(this)
+            var dotView = DotView.In.ForBus(this)
             val changePreviousItem = MenuItem("Change previous")
             val clearPreviousItem = MenuItem("Clear previous")
             val contextMenu = ContextMenu(changePreviousItem, clearPreviousItem)
             override val nameText = TextLC(this)
             init {
-                dotView.layoutX = this.startX
-                dotView.layoutY = this.startY
                 nameText.text = name
                 nameText.layoutX = x
                 nameText.layoutY = 20.0
+                dotView.layoutX = this.startX
                 changePreviousItem.setOnAction {
                     this.execute(true)
                     circuitView.putInRepository(this)
                 }
                 clearPreviousItem.setOnAction {
-                    this.execute(false)
+                    circuitView.clearInputOfOutBus()
+                    val input = this.bus.input
+                    input.changePrevious(null)
+                    if (input.previous != null) {
+                        input.previous!!.nextDots.remove(input)
+                    }
+                    if (dotView.previous is GateView){
+                        (dotView.previous as GateView).outDotView.next.remove(this.dotView)
+                    }
+                    dotView.previous = null
                 }
                 for (element in this.getShapes()) {
                     element.setOnMouseClicked { event: javafx.scene.input.MouseEvent ->
@@ -166,6 +186,10 @@ sealed class BusView : ElementView, Line() {
                 val shapes = mutableListOf<Shape>(this, nameText)
                 shapes.addAll(dotView.getShapes())
                 return shapes
+            }
+
+            override fun redraw(): Boolean {
+                return dotView.previous != null
             }
         }
     }
