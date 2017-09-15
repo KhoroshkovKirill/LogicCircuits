@@ -10,7 +10,7 @@ class TruthTable : GridPane() {
         this.isGridLinesVisible = true
         this.hgap = 4.0
         this.vgap = 2.0
-        //
+        ///////////////////////////////////////////////////////////////////////////////////////////////////delete
         println(this.gridLinesVisibleProperty())
         println(this.isGridLinesVisible)
         //

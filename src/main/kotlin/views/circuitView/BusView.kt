@@ -130,37 +130,42 @@ sealed class BusView : ElementView, Line() {
             }
 
             override fun getShapes() : List<Shape>{
-                return listOf(this, this.nameText)
+                val shapes = mutableListOf<Shape>(this, this.nameText)
+                shapes.addAll(dots)
+                return shapes
             }
 
         }
 
-        class Out(name: String, x: Double, val bus: Bus.Out, circuitView: CircuitView) : BusView.IO(name, x){
-            var dotView = DotView.In.ForBus(this)
+        class Out(name: String, x: Double, val bus: Bus.Out, circuitView: CircuitView) :
+                BusView.IO(name, x), Next{
+            var dot = Circle()
+            val lineToPrevious = Line()
+            var previous: GateView? = null
             val changePreviousItem = MenuItem("Change previous")
             val clearPreviousItem = MenuItem("Clear previous")
             val contextMenu = ContextMenu(changePreviousItem, clearPreviousItem)
             override val nameText = TextLC(this)
             init {
+                dot.radius = 3.0
                 nameText.text = name
                 nameText.layoutX = x
                 nameText.layoutY = 20.0
-                dotView.layoutX = this.startX
                 changePreviousItem.setOnAction {
                     this.execute(true)
                     circuitView.putInRepository(this)
                 }
                 clearPreviousItem.setOnAction {
-                    circuitView.clearInputOfOutBus()
+                    circuitView.redrawBus(this)
                     val input = this.bus.input
                     input.changePrevious(null)
                     if (input.previous != null) {
                         input.previous!!.nextDots.remove(input)
                     }
-                    if (dotView.previous is GateView){
-                        (dotView.previous as GateView).outDotView.next.remove(this.dotView)
+                    if (previous != null){
+                        previous!!.outDotView.next.remove(this)
                     }
-                    dotView.previous = null
+                    previous = null
                 }
                 for (element in this.getShapes()) {
                     element.setOnMouseClicked { event: javafx.scene.input.MouseEvent ->
@@ -182,14 +187,31 @@ sealed class BusView : ElementView, Line() {
                 }
             }
 
-            override fun getShapes() : List<Shape>{
+            fun drawLineTo(y: Double, previousBus: BusView) : Line{
+                lineToPrevious.startY = y
+                lineToPrevious.endY = y
+                lineToPrevious.startX = this.startX
+                lineToPrevious.endX = previousBus.startX
+                return lineToPrevious
+            }
+
+            override fun getShapes() : MutableList<Shape>{
                 val shapes = mutableListOf<Shape>(this, nameText)
-                shapes.addAll(dotView.getShapes())
+                if (previous != null){
+                    shapes.add(dot)
+                    shapes.add(lineToPrevious)
+                }
                 return shapes
             }
 
             override fun redraw(): Boolean {
-                return dotView.previous != null
+                dot.layoutX = this.startX
+                dot.layoutY = lineToPrevious.startY
+                return previous != null
+            }
+
+            override fun getIn(): Dot.In {
+                return this.bus.input
             }
         }
     }

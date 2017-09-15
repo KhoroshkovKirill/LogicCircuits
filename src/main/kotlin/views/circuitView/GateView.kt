@@ -54,8 +54,8 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
     }
 
     class Not(i: Int, j: Int, override val gate: Gate.Not, circuitView: CircuitView) : GateView(i, j, gate, circuitView) {
-        override val outDotView = DotView.Out.ForGate(gate.output, this)
-        val inDotView = DotView.In.ForGate(gate.input, this)
+        override val outDotView = DotView.Out(gate.output, this)
+        val inDotView = DotView.In(gate.input, this)
         val inDotItem = MenuItem("InPut")
         override val contextMenu = ContextMenu(inDotItem)
         override var height: Double = 0.0
@@ -109,9 +109,9 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
 
     class Multivariate(i: Int, j: Int, override val gate: Gate.Multivariate, circuitView: CircuitView) : GateView(i, j, gate, circuitView){
         val text : TextLC
-        val inDotListView = mutableListOf<DotView.In.ForGate>()
+        val inDotListView = mutableListOf<DotView.In>()
         override var height: Double = 0.0
-        override val outDotView: DotView.Out.ForGate
+        override val outDotView: DotView.Out
         override val contextMenu = ContextMenu()
         init {
             val name = when (gate) {
@@ -123,7 +123,7 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
             text.text = name
             rectangle.height = (gate.inputList.size + 1) * 15.0
             for (element in gate.inputList){
-                inDotListView.add(DotView.In.ForGate(element, this))
+                inDotListView.add(DotView.In(element, this))
             }
             for ((index, element) in inDotListView.withIndex()){
                 val inDotItem = MenuItem("InPut " + index.toString())
@@ -133,7 +133,7 @@ sealed class GateView(var i: Int, var j: Int, open val gate: Gate, val circuitVi
                 }
                 contextMenu.items.add(inDotItem)
             }
-            outDotView = DotView.Out.ForGate(gate.output, this)
+            outDotView = DotView.Out(gate.output, this)
             for (element in this.getShapes()) {
                 element.setOnMouseClicked { event: javafx.scene.input.MouseEvent ->
                     run {

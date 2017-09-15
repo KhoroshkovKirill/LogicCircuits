@@ -14,9 +14,21 @@ sealed class DotView(elementOwner: ElementView) : CircleLC(elementOwner), Elemen
         return listOf(this, this.line)
     }
 
-    sealed class In(elementOwner: ElementView) : DotView(elementOwner){
+    abstract fun changeInversion()
+
+    class In(val dot: Dot.In, elementOwner: ElementView) : DotView(elementOwner), Next {
 
         var previous: Previous? = null
+
+        init {
+            if (this.dot.isInverted) {
+                this.radius = 4.0
+            } else {
+                this.radius = 0.0
+            }
+            this.fill = Paint.valueOf("white")
+            this.stroke = Paint.valueOf("black")
+        }
 
         fun drawLineToBus(busView: BusView): Line {
             if (busView is BusView.IO.Out) {
@@ -29,70 +41,42 @@ sealed class DotView(elementOwner: ElementView) : CircleLC(elementOwner), Elemen
             return line
         }
 
-        class ForGate(val dot: Dot.In, elementOwner: ElementView) : In(elementOwner), Invertible {
-
-            init {
-                if (this.dot.isInverted) {
-                    this.radius = 4.0
-                } else {
-                    this.radius = 0.0
-                }
-                this.fill = Paint.valueOf("white")
-                this.stroke = Paint.valueOf("black")
+        override fun changeInversion() {
+            if (this.dot.isInverted) {
+                this.radius = 0.0
+            } else {
+                this.radius = 4.0
             }
-
-            override fun changeInversion() {
-                if (this.dot.isInverted) {
-                    this.radius = 0.0
-                } else {
-                    this.radius = 4.0
-                }
-                this.dot.changeInversion()
-            }
-
+            this.dot.changeInversion()
         }
 
-        class ForBus(elementOwner: ElementView) : DotView.In(elementOwner){
-
-            init {
-                this.radius = 3.0
-            }
-
+        override fun getIn(): Dot.In {
+            return this.dot
         }
 
     }
 
-    sealed class Out(val dot: Dot.Out, elementOwner: ElementView) : DotView(elementOwner){
+    class Out(val dot: Dot.Out, elementOwner: ElementView) : DotView(elementOwner) {
 
-        val next = mutableListOf<DotView.In>()
+        val next = mutableListOf<Next>()
 
-        class ForGate(dot: Dot.Out, elementOwner: ElementView) : Out(dot, elementOwner), Invertible {
-            init {
-                if (this.dot.isInverted) {
-                    this.radius = 4.0
-                } else {
-                    this.radius = 0.0
-                }
-                this.fill = Paint.valueOf("white")
-                this.stroke = Paint.valueOf("black")
+        init {
+            if (this.dot.isInverted) {
+                this.radius = 4.0
+            } else {
+                this.radius = 0.0
             }
-
-            override fun changeInversion() {
-                if (this.dot.isInverted) {
-                    this.radius = 0.0
-                } else {
-                    this.radius = 4.0
-                }
-                this.dot.changeInversion()
-            }
+            this.fill = Paint.valueOf("white")
+            this.stroke = Paint.valueOf("black")
         }
 
-        class ForBus(dot: Dot.Out, elementOwner: ElementView) : Out(dot, elementOwner){
-
-            init {
-                this.radius = 3.0
+        override fun changeInversion() {
+            if (this.dot.isInverted) {
+                this.radius = 0.0
+            } else {
+                this.radius = 4.0
             }
+            this.dot.changeInversion()
         }
     }
-
 }

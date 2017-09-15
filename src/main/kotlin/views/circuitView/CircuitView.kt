@@ -13,7 +13,7 @@ class CircuitView : Pane(){
     val inBusesView = InBusesView(this)
     val gatesView = GatesView(inBusesView.width, this)
     var repositoryGate: GateView? = null
-    var repositoryDot: DotView.In.ForGate? = null
+    var repositoryDot: DotView.In? = null
     var repositoryOutBus : BusView.IO.Out? = null
     val outBusView = BusView.IO.Out(
             "Y",
@@ -22,7 +22,7 @@ class CircuitView : Pane(){
             this
     )
     init {
-        this.children.addAll(outBusView.getShapes().filter { !outBusView.dotView.getShapes().contains(it) })
+        this.children.addAll(outBusView.getShapes().filter { it != outBusView.dot && it!= outBusView.lineToPrevious})
         this.setOnMouseClicked { event: javafx.scene.input.MouseEvent ->
             run {
                 if (event.button == MouseButton.PRIMARY) {
@@ -141,12 +141,14 @@ class CircuitView : Pane(){
 
     fun shiftNextGates(gateView: GateView){
         for (element in gateView.outDotView.next){
-            val nextGate = element.elementOwner as GateView
-            shiftGate(nextGate.i, nextGate.j, nextGate.j + 1)
+            if (element is DotView.In) {
+                val nextGate = element.elementOwner as GateView
+                shiftGate(nextGate.i, nextGate.j, nextGate.j + 1)
+            }
         }
     }
 
-    fun putInRepository(gateView: GateView, dotView: DotView.In.ForGate){
+    fun putInRepository(gateView: GateView, dotView: DotView.In){
         this.repositoryDot = dotView
         this.repositoryGate = gateView
     }
@@ -155,7 +157,7 @@ class CircuitView : Pane(){
         this.repositoryOutBus = outBusView
     }
 
-    fun changeInPutOfGate(previous: Previous, gateView: GateView, inPut: DotView.In.ForGate){
+    fun changeInPutOfGate(previous: Previous, gateView: GateView, inPut: DotView.In){
         if (previous is GateView && !previous.getPrevious().contains(gateView)) {
             if (previous.j >= gateView.j) {
                 this.shiftGate(gateView.i, gateView.j, previous.j + 1)
@@ -174,13 +176,15 @@ class CircuitView : Pane(){
 
     fun changeInPutOfOutBus(previous: GateView, outBusView: BusView.IO.Out) {
         outBusView.bus.input.changePrevious(previous.getOut())
-        val dotView = outBusView.dotView
-        previous.outDotView.next.add(dotView)
-        dotView.layoutY = previous.outDotView.layoutY
+        outBusView.previous = previous
+        previous.outDotView.next.add(outBusView)
         val localBus = this.drawLineWithLocalBus(
-                this.gatesView.gatesColumnView.lastIndex, dotView.layoutY, previous, dotView.line
+                this.gatesView.gatesColumnView.lastIndex,
+                previous.outDotView.layoutY,
+                previous,
+                outBusView.lineToPrevious
         )
-        dotView.drawLineToBus(localBus)
+        outBusView.drawLineTo(previous.outDotView.layoutY, localBus)
         redrawBus(outBusView)
         redrawBus(localBus)
     }
@@ -245,16 +249,7 @@ class CircuitView : Pane(){
 
     fun redrawBus(busView: BusView){
         this.children.removeAll(busView.getShapes())
-        val isReDrawn = busView.redraw()
-        val shapes = busView.getShapes().toMutableList()
-        if (busView is BusView.IO.Out && !isReDrawn){
-            shapes.removeAll(busView.dotView.getShapes())
-        }
+        busView.redraw()
         this.children.addAll(busView.getShapes())
     }
-
-    fun clearInputOfOutBus(){
-        this.children.removeAll(this.outBusView.dotView.getShapes())
-    }
-
 }
