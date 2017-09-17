@@ -78,15 +78,11 @@ sealed class BusesView(val circuitView: CircuitView){
             return difference
         }
 
-        fun redrawBusesFrom(index: Int){
-            for (i in index..busList.lastIndex){
-                busList[i].redraw()
-            }
-        }
-
         override fun moveBusesFrom(index: Int, difference: Double) {
             super.moveBusesFrom(index, difference)
-            redrawBusesFrom(index)
+            for (i in index..busList.lastIndex){
+                (busList[i] as BusView.IO.Out).lineToPrevious.endX -= difference
+            }
         }
 
         override fun getShapes(): List<Shape> {
