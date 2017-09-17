@@ -19,7 +19,7 @@ class RenameBusController {
         stage.title = "Rename"
 
         /*InBus Tab*/
-        val tabForInBus = Tab("In")
+        val tabForInBus = Tab("Input")
         tabForInBus.isClosable = false
         val paneForInBus = Pane()
         val newNameInTextField = TextField()
@@ -29,7 +29,7 @@ class RenameBusController {
         val indexInTextField = TextField()
         indexInTextField.layoutX = 100.0
         indexInTextField.layoutY = 50.0
-        val indexText = Text(20.0, 67.0, "Index:")
+        val indexTextForInBus = Text(20.0, 67.0, "Index:")
         val messageForInBus = Text(20.0, 110.0, "")
         val okButtonForInBus = Button("Ok")
         okButtonForInBus.layoutX = 160.0
@@ -52,41 +52,50 @@ class RenameBusController {
         cancelButtonForInBus.layoutY = 160.0
         cancelButtonForInBus.onAction = EventHandler { stage.close() }
         paneForInBus.children.addAll(
-                indexText,messageForInBus, okButtonForInBus, cancelButtonForInBus,
+                indexTextForInBus,messageForInBus, okButtonForInBus, cancelButtonForInBus,
                 indexInTextField, newNameInText, newNameInTextField)
         tabForInBus.content = paneForInBus
 
         /*OutBus Tab*/
-        val tabForOutBus = Tab("Out")
+        val tabForOutBus = Tab("Output")
         tabForOutBus.isClosable = false
         val paneForOutBus = Pane()
         val newNameOutTextField = TextField()
         newNameOutTextField.layoutX = 100.0
         newNameOutTextField.layoutY = 10.0
-        val mewNameOutText = Text(20.0, 27.0, "New name:")
-        val messageOutBus = Text(20.0,60.0,"")
+        val newNameOutText = Text(20.0, 27.0, "New name:")
+        val indexOutTextField = TextField()
+        indexOutTextField.layoutX = 100.0
+        indexOutTextField.layoutY = 50.0
+        val indexTextForOutBus = Text(20.0, 67.0, "Index:")
+        val messageForOutBus = Text(20.0, 110.0, "")
         val okButtonForOutBus = Button("Ok")
         okButtonForOutBus.layoutX = 160.0
         okButtonForOutBus.layoutY = 160.0
         okButtonForOutBus.onAction = EventHandler {
             try {
-                main.circuitView.renameOutBus(newNameOutTextField.text)
+                main.circuitView.renameOutBus(indexOutTextField.text.toInt(),newNameOutTextField.text)
                 stage.close()
             }
-            catch (ex : IllegalArgumentException){
-                messageOutBus.text = ex.message
+            catch (ex : NumberFormatException){
+                messageForOutBus.text = "Неправильно введен индекс"
             }
+            catch (ex : IllegalArgumentException){
+                messageForOutBus.text = ex.message
+            }
+
         }
         val cancelButtonForOutBus = Button("Cancel")
         cancelButtonForOutBus.layoutX = 210.0
         cancelButtonForOutBus.layoutY = 160.0
         cancelButtonForOutBus.onAction = EventHandler { stage.close() }
         paneForOutBus.children.addAll(
-                mewNameOutText,messageOutBus, okButtonForOutBus, cancelButtonForOutBus, newNameOutTextField)
+                indexTextForOutBus,messageForOutBus, okButtonForOutBus, cancelButtonForOutBus,
+                indexOutTextField, newNameOutText, newNameOutTextField)
         tabForOutBus.content = paneForOutBus
 
         /*Scene*/
-        val root = TabPane(tabForInBus,tabForOutBus)
+        val root = TabPane(tabForInBus, tabForOutBus)
         val scene = Scene(root, 300.0, 250.0)
         stage.isResizable = false
         stage.initModality(Modality.WINDOW_MODAL)

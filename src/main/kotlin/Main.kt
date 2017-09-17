@@ -84,7 +84,9 @@ class Main : Application() {
 
     fun check() : Boolean{
         try {
-            circuitView.circuit.outBus.calculateValue()
+            for (element in circuitView.circuit.outBuses){
+                element.calculateValue()
+            }
             return true
         } catch (ex: IllegalArgumentException) {
             this.printMessage(ex.localizedMessage)

@@ -14,10 +14,16 @@ sealed class Bus: LogElement {
         }
     }
 
-    class Out: logic.Bus(){
+    class Out: logic.Bus(), Deletable{
         val input : Dot.In = Dot.In()
 
         override fun calculateValue() : Boolean = input.calculateValue()
+
+        override fun prepareToDelete(){
+            if (input.previous != null) {
+                input.previous!!.nextDots.remove(input)
+            }
+        }
     }
 
 }

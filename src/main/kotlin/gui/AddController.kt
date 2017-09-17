@@ -17,39 +17,75 @@ class AddController {
         val stage = Stage()
         stage.title = "Add"
 
-        /*ForBus Tab*/
-        val tabForBus = Tab("Bus")
-        tabForBus.isClosable = false
-        val paneForBus = Pane()
-        val nameTextField = TextField()
-        nameTextField.layoutX = 75.0
-        nameTextField.layoutY = 10.0
-        val nameText = Text("Name:")
-        nameText.layoutX = 20.0
-        nameText.layoutY = 27.0
-        val messageForBus = Text()
-        messageForBus.layoutX = 20.0
-        messageForBus.layoutY = 60.0
-        val okButtonForBus = Button("Ok")
-        okButtonForBus.layoutX = 160.0
-        okButtonForBus.layoutY = 160.0
-        okButtonForBus.onAction = EventHandler {
+        /*In Bus Tab*/
+        val tabForInBus = Tab("Input")
+        tabForInBus.isClosable = false
+        val paneForInBus = Pane()
+        val nameTextFieldForInBus = TextField()
+        nameTextFieldForInBus.layoutX = 75.0
+        nameTextFieldForInBus.layoutY = 10.0
+        val nameTextForInBus = Text("Name:")
+        nameTextForInBus.layoutX = 20.0
+        nameTextForInBus.layoutY = 27.0
+        val messageForInBus = Text()
+        messageForInBus.layoutX = 20.0
+        messageForInBus.layoutY = 60.0
+        val okButtonForInBus = Button("Ok")
+        okButtonForInBus.layoutX = 160.0
+        okButtonForInBus.layoutY = 160.0
+        okButtonForInBus.onAction = EventHandler {
             try {
-                main.circuitView.addBusView(nameTextField.text)
+                main.circuitView.addInBus(nameTextFieldForInBus.text)
                 stage.close()
             }
             catch (ex : IllegalArgumentException){
-                messageForBus.text = ex.message
+                messageForInBus.text = ex.message
             }
         }
-        val cancelButtonForBus = Button("Cancel")
-        cancelButtonForBus.layoutX = 210.0
-        cancelButtonForBus.layoutY = 160.0
-        cancelButtonForBus.onAction = EventHandler { stage.close() }
-        paneForBus.children.addAll(nameText,messageForBus, okButtonForBus, cancelButtonForBus, nameTextField)
-        tabForBus.content = paneForBus
+        val cancelButtonForInBus = Button("Cancel")
+        cancelButtonForInBus.layoutX = 210.0
+        cancelButtonForInBus.layoutY = 160.0
+        cancelButtonForInBus.onAction = EventHandler { stage.close() }
+        paneForInBus.children.addAll(
+                nameTextForInBus,messageForInBus, okButtonForInBus, cancelButtonForInBus, nameTextFieldForInBus
+        )
+        tabForInBus.content = paneForInBus
 
-        /*ForGate Tab*/
+        /*Out Bus Tab*/
+        val tabForOutBus = Tab("Output")
+        tabForOutBus.isClosable = false
+        val paneForOutBus = Pane()
+        val nameTextFieldForOutBus = TextField()
+        nameTextFieldForOutBus.layoutX = 75.0
+        nameTextFieldForOutBus.layoutY = 10.0
+        val nameTextForOutBus = Text("Name:")
+        nameTextForOutBus.layoutX = 20.0
+        nameTextForOutBus.layoutY = 27.0
+        val messageForOutBus = Text()
+        messageForOutBus.layoutX = 20.0
+        messageForOutBus.layoutY = 60.0
+        val okButtonForOutBus = Button("Ok")
+        okButtonForOutBus.layoutX = 160.0
+        okButtonForOutBus.layoutY = 160.0
+        okButtonForOutBus.onAction = EventHandler {
+            try {
+                main.circuitView.addOutBus(nameTextFieldForOutBus.text)
+                stage.close()
+            }
+            catch (ex : IllegalArgumentException){
+                messageForOutBus.text = ex.message
+            }
+        }
+        val cancelButtonForOutBus = Button("Cancel")
+        cancelButtonForOutBus.layoutX = 210.0
+        cancelButtonForOutBus.layoutY = 160.0
+        cancelButtonForOutBus.onAction = EventHandler { stage.close() }
+        paneForOutBus.children.addAll(
+                nameTextForOutBus,messageForOutBus, okButtonForOutBus, cancelButtonForOutBus, nameTextFieldForOutBus
+        )
+        tabForOutBus.content = paneForOutBus
+
+        /*Gate Tab*/
         val tabForGate = Tab("Gate")
         tabForGate.isClosable = false
         val paneForGate = Pane()
@@ -109,7 +145,7 @@ class AddController {
         tabForGate.content = paneForGate
 
         /*Scene*/
-        val root = TabPane(tabForBus,tabForGate)
+        val root = TabPane(tabForInBus, tabForOutBus,tabForGate)
         val scene = Scene(root, 300.0, 250.0)
         stage.isResizable = false
         stage.initModality(Modality.WINDOW_MODAL)

@@ -76,7 +76,7 @@ sealed class BusView : ElementView, Line() {
         }
     }
 
-    sealed class IO(name: String, x: Double) : BusView() {
+    sealed class IO(name: String, x: Double) : BusView(), Deletable {
         abstract val nameText: TextLC
 
         init {
@@ -97,7 +97,7 @@ sealed class BusView : ElementView, Line() {
             return this.nameText.layoutBounds.width + 5.0
         }
 
-        class In(name: String, x: Double, val bus: Bus.In) : BusView.IO(name, x) , Deletable, Previous{
+        class In(name: String, x: Double, val bus: Bus.In) : BusView.IO(name, x), Deletable, Previous{
 
             val intersections = mutableSetOf<Line>()
             val dots = mutableListOf<Circle>()
@@ -138,7 +138,7 @@ sealed class BusView : ElementView, Line() {
         }
 
         class Out(name: String, x: Double, val bus: Bus.Out, circuitView: CircuitView) :
-                BusView.IO(name, x), Next{
+                BusView.IO(name, x), Next, Deletable{
             var dot = Circle()
             val lineToPrevious = Line()
             var previous: GateView? = null
@@ -207,11 +207,16 @@ sealed class BusView : ElementView, Line() {
             override fun redraw(): Boolean {
                 dot.layoutX = this.startX
                 dot.layoutY = lineToPrevious.startY
+                lineToPrevious.startX = this.startX
                 return previous != null
             }
 
             override fun getIn(): Dot.In {
                 return this.bus.input
+            }
+
+            override fun prepareToDelete(){
+                this.bus.prepareToDelete()
             }
         }
     }

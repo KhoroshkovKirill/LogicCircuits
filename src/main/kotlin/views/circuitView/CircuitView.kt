@@ -10,19 +10,13 @@ import views.circuitView.ShapesLC.ShapeLC
 
 class CircuitView : Pane(){
     val circuit = Circuit()
-    val inBusesView = InBusesView(this)
+    val inBusesView = BusesView.In(this)
     val gatesView = GatesView(inBusesView.width, this)
     var repositoryGate: GateView? = null
     var repositoryDot: DotView.In? = null
     var repositoryOutBus : BusView.IO.Out? = null
-    val outBusView = BusView.IO.Out(
-            "Y",
-            inBusesView.width + gatesView.width + 20.0,
-            circuit.outBus,
-            this
-    )
+    val outBusesView = BusesView.Out(inBusesView.width + gatesView.width + 20.0, this)
     init {
-        this.children.addAll(outBusView.getShapes().filter { it != outBusView.dot && it!= outBusView.lineToPrevious})
         this.setOnMouseClicked { event: javafx.scene.input.MouseEvent ->
             run {
                 if (event.button == MouseButton.PRIMARY) {
@@ -56,16 +50,26 @@ class CircuitView : Pane(){
         }
     }
 
-    fun addBusView(name : String) {
+    fun addInBus(name : String) {
         if (name == "") {
             throw IllegalArgumentException("Шину следует назвать")
         } else {
             val bus = Bus.In()
-            circuit.addBus(bus)
+            circuit.add(bus)
             val difference = inBusesView.add(name, bus)
-            outBusView.changeLayoutX(difference)
+            outBusesView.changeLayoutX(difference)
             gatesView.moveColumnsFrom(0, difference)
             redrawBuses(inBusesView.busList)
+        }
+    }
+
+    fun addOutBus(name : String){
+        if (name == "") {
+            throw IllegalArgumentException("Шину следует назвать")
+        } else {
+            val bus = Bus.Out()
+            circuit.add(bus)
+            outBusesView.add(name, bus)
         }
     }
 
@@ -74,18 +78,36 @@ class CircuitView : Pane(){
             throw IllegalArgumentException("Шину следует назвать")
         } else {
             val difference = inBusesView.rename(index,newName)
-            outBusView.changeLayoutX(difference)
+            outBusesView.changeLayoutX(difference)
             gatesView.moveColumnsFrom(0, difference)
+        }
+    }
+
+    fun renameOutBus(index: Int, newName : String) {
+        if (newName == "") {
+            throw IllegalArgumentException("Шину следует назвать")
+        } else {
+            outBusesView.rename(index,newName)
         }
     }
 
     fun deleteInBus(index: Int){
         try {
             val difference = -inBusesView.busList[index].getWidth()
-            circuit.delete(inBusesView.busList[index].bus)
+            circuit.delete((inBusesView.busList[index] as BusView.IO.In).bus)
             this.children.removeAll(inBusesView.remove(index))
-            outBusView.changeLayoutX(difference)
+            outBusesView.changeLayoutX(difference)
             gatesView.moveColumnsFrom(0, difference)
+        }
+        catch (ex : IndexOutOfBoundsException){
+            throw IndexOutOfBoundsException("Выход за предел списка")
+        }
+    }
+
+    fun deleteOutBus(index: Int){
+        try {
+            circuit.delete((outBusesView.busList[index] as BusView.IO.Out).bus)
+            this.children.removeAll(outBusesView.remove(index))
         }
         catch (ex : IndexOutOfBoundsException){
             throw IndexOutOfBoundsException("Выход за предел списка")
@@ -94,25 +116,17 @@ class CircuitView : Pane(){
 
     fun deleteGate(i: Int, j: Int){
         val gateView = gatesView.getGateView(i, j)
-
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         circuit.delete(gateView.gate)
         this.children.removeAll(gateView.getShapes())
         for (inDot in gateView.outDotView.next){
             //inDot.clear()
         }
-        outBusView.changeLayoutX(gatesView.removeGate(i, j))
-    }
-
-    fun renameOutBus(newName: String){
-        if (newName == "") {
-            throw IllegalArgumentException("Шину следует назвать")
-        } else {
-            outBusView.rename(newName)
-        }
+        outBusesView.changeLayoutX(gatesView.removeGate(i, j))
     }
 
     fun addGateView(gate: Gate){
-        circuit.addGate(gate)
+        circuit.add(gate)
         var row = 0
         try {
             row = gatesView.gatesColumnView[0].gatesView.size
@@ -125,7 +139,7 @@ class CircuitView : Pane(){
                 }
         this.children.addAll(gateView.getShapes())
         val difference = gatesView.addGateView(gateView)
-        outBusView.changeLayoutX(difference)
+        outBusesView.changeLayoutX(difference)
     }
 
     fun shiftGate(i: Int, j: Int, newColumn: Int){
@@ -135,7 +149,7 @@ class CircuitView : Pane(){
         if (gateView is GateView.Not){
 
         }
-        this.outBusView.changeLayoutX(difference)
+        this.outBusesView.changeLayoutX(difference)
         shiftNextGates(gateView)
     }
 
@@ -219,7 +233,7 @@ class CircuitView : Pane(){
         else {
             val difference = gatesView.gatesColumnView[column].addLocalBus(previous)
             gatesView.moveColumnsFrom(column + 1, difference)
-            outBusView.changeLayoutX(difference)
+            outBusesView.changeLayoutX(difference)
             val localBus = gatesView.gatesColumnView[column].localBuses[previous]!!
             if (gatesView.gatesColumnView[column].gatesView.contains(previous) && previous is GateView){
                 localBus.drawLineTo(previous.outDotView)

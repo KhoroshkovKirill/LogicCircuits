@@ -2,6 +2,7 @@ package views.truthTable
 
 import javafx.scene.layout.GridPane
 import javafx.scene.text.Text
+import views.circuitView.BusView
 import views.circuitView.CircuitView
 import java.lang.Math.pow
 
@@ -13,7 +14,7 @@ class TruthTable : GridPane() {
         ///////////////////////////////////////////////////////////////////////////////////////////////////delete
         println(this.gridLinesVisibleProperty())
         println(this.isGridLinesVisible)
-        //
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     fun clear(){
@@ -29,13 +30,16 @@ class TruthTable : GridPane() {
         }.forEachIndexed {
             i, nameIn -> this.add(nameIn, i, 0)
         }
-        val nameOut = Text(circuitView.outBusView.nameText.text)
         val count = circuitView.circuit.inBuses.size
-        this.add(nameOut, count, 0)
+        circuitView.outBusesView.busList.map {
+            Text(it.nameText.text)
+        }.forEachIndexed {
+            i, nameOut -> this.add(nameOut, count + i, 0)
+        }
 
         /*Values*/
-        val input = circuitView.circuit.inBuses
-        val output = circuitView.circuit.outBus
+        val input = circuitView.inBusesView.busList.map { (it as BusView.IO.In).bus }
+        val output = circuitView.outBusesView.busList.map { (it as BusView.IO.Out).bus }
         val countOfRows = pow(2.0,count.toDouble()).toInt()
         for (rowIndex in 0..countOfRows - 1){
             var num = countOfRows
@@ -45,8 +49,10 @@ class TruthTable : GridPane() {
                 val x = Text(if (element.value) "1" else "0")
                 this.add(x, columnIndex, rowIndex + 1)
             }
-            val y = Text(if (output.calculateValue()) "1" else "0")
-            this.add(y, count, rowIndex + 1)
+            output.forEachIndexed { index, out ->
+                val y = Text(if (out.calculateValue()) "1" else "0")
+                this.add(y, count + index, rowIndex + 1)
+            }
         }
     }
 }
